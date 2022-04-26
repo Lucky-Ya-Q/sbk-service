@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,7 +21,7 @@ import com.ruoyi.framework.security.handle.LogoutSuccessHandlerImpl;
 
 /**
  * spring security配置
- * 
+ *
  * @author ruoyi
  */
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
@@ -31,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
      */
     @Autowired
     private UserDetailsService userDetailsService;
-    
+
     /**
      * 认证失败处理类
      */
@@ -49,13 +50,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
      */
     @Autowired
     private JwtAuthenticationTokenFilter authenticationTokenFilter;
-    
+
     /**
      * 跨域过滤器
      */
     @Autowired
     private CorsFilter corsFilter;
-    
+
     /**
      * 解决 无法直接注入 AuthenticationManager
      *
@@ -122,6 +123,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
         // 添加CORS filter
         httpSecurity.addFilterBefore(corsFilter, JwtAuthenticationTokenFilter.class);
         httpSecurity.addFilterBefore(corsFilter, LogoutFilter.class);
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        //ignore文件 ： 无需进入spring security 框架
+        // 1.允许对于网站静态资源的无授权访问
+        // 2.对于获取token的rest api要允许匿名访问
+        web.ignoring().antMatchers(
+                        "/api/sbk/base/**",
+                        "/api/sbk/life/**" //匿名访问接口
+                );
     }
 
     /**
