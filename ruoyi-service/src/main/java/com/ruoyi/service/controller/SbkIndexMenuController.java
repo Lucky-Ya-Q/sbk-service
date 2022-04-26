@@ -41,8 +41,8 @@ public class SbkIndexMenuController extends BaseController {
     @GetMapping("/list")
     public TableDataInfo list(SbkIndexMenu sbkIndexMenu) {
         startPage();
-        LambdaQueryWrapper<SbkIndexMenu> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(StrUtil.isNotEmpty(sbkIndexMenu.getMenuName()), SbkIndexMenu::getMenuName, sbkIndexMenu.getMenuName());
+        LambdaQueryWrapper<SbkIndexMenu> queryWrapper = new LambdaQueryWrapper<SbkIndexMenu>()
+                .like(StrUtil.isNotEmpty(sbkIndexMenu.getMenuName()), SbkIndexMenu::getMenuName, sbkIndexMenu.getMenuName());
         List<SbkIndexMenu> list = sbkIndexMenuService.list(queryWrapper);
         return getDataTable(list);
     }
@@ -55,8 +55,8 @@ public class SbkIndexMenuController extends BaseController {
     @Log(title = "首页菜单", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, SbkIndexMenu sbkIndexMenu) {
-        LambdaQueryWrapper<SbkIndexMenu> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(StrUtil.isNotEmpty(sbkIndexMenu.getMenuName()), SbkIndexMenu::getMenuName, sbkIndexMenu.getMenuName());
+        LambdaQueryWrapper<SbkIndexMenu> queryWrapper = new LambdaQueryWrapper<SbkIndexMenu>()
+                .like(StrUtil.isNotEmpty(sbkIndexMenu.getMenuName()), SbkIndexMenu::getMenuName, sbkIndexMenu.getMenuName());
         List<SbkIndexMenu> list = sbkIndexMenuService.list(queryWrapper);
         ExcelUtil<SbkIndexMenu> util = new ExcelUtil<SbkIndexMenu>(SbkIndexMenu.class);
         util.exportExcel(response, list, "首页菜单数据");
