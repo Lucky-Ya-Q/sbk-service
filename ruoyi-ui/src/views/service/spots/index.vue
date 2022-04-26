@@ -71,8 +71,6 @@
       </el-table-column>
       <el-table-column label="标题" align="center" prop="title" />
       <el-table-column label="地址" align="center" prop="address" />
-      <el-table-column label="经度" align="center" prop="longitude" />
-      <el-table-column label="纬度" align="center" prop="latitude" />
       <el-table-column label="服务热线" align="center" prop="phone" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
