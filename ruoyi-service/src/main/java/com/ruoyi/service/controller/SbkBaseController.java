@@ -15,11 +15,16 @@ import com.tecsun.sm.utils.ParamUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 @Api(tags = "社保卡基础功能")
@@ -32,6 +37,8 @@ public class SbkBaseController {
     private CSBService csbService;
     @Autowired
     private SbkService sbkService;
+    @Autowired
+    private RestTemplate restTemplate;
 
     /**
      * 人员基础信息变更
@@ -116,6 +123,28 @@ public class SbkBaseController {
         String keyInfo = sbkUser.getAac002() + "|" + sbkUser.getAac003() + "|" + sbkUser.getAaz500() + "|" + fwmmxgParam.getOldPassword() + "|" + fwmmxgParam.getNewPassword();
         Result result = sbkService.getResult("0821020", keyInfo);
         return toAjax(result);
+    }
+
+    /**
+     * 公积金查询
+     */
+    @ApiOperation("公积金查询")
+    @GetMapping("/gjjcx")
+    public Object gjjcx() throws IOException {
+        SbkUser sbkUser = getSbkUser();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        String url = "http://10.36.1.244:13080/share/C13010/hf/grjbxxcx.service";
+        httpHeaders.set("sendnode", "C13010|ls");
+        Map<String, Object> hashMap = new HashMap<>();
+        hashMap.put("zjbzxbm", "C13010");
+        hashMap.put("share", "share");
+        hashMap.put("name", sbkUser.getAac003());
+        hashMap.put("zjhm", sbkUser.getAac002());
+
+        HttpEntity<Object> httpEntity = new HttpEntity<>(hashMap, httpHeaders);
+        return restTemplate.postForObject(url, httpEntity, String.class);
     }
 
     private SbkUser getSbkUser() throws IOException {
