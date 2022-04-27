@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <title>社会保障卡</title>
+    <script type="text/javascript" src="../common/js/fr.js" charset="UTF-8"></script>
+    <link rel="stylesheet" href="../common/css/frozen.css">
+    <link rel="stylesheet" href="../common/css/demo.css">
+    <link rel="stylesheet" href="../common/css/form.css">
+    <script src="../common/js/zepto.min.js"></script>
+    <script src="../common/js/frozen.js"></script>
+    <script type="text/javascript" src="../common/js/jquery-1.8.3.min.js"></script>
+    <style>
+        .bottom{
+            width: 100%;
+            text-align: center;
+            color: red;
+            font-size: 12px;
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+
+<body ontouchstart>
+<header class="ui-header ui-header-positive ui-border-b">
+        <h1>社会保障卡挂失办理</h1>
+<!--    <h1>系统温馨提示</h1>-->
+    <p></p>
+</header>
+
+<section class="ui-container">
+    <div class="demo-item">
+        <div class="demo-block" style="margin-top:0px;margin-bottom:0px;">
+            <section class="ui-placehold-img">
+                <span style="background-image:url(../common/img/si.png);"></span>
+            </section>
+        </div>
+        <!---->
+        <p class="demo-desc">请选择挂失原因：</p>
+        <div class="ui-form ui-border-t">
+            <div class="ui-form-item ui-form-item-radio ui-border-b" style="padding-left:35px;;">
+                <label class="ui-radio" for="radio">
+                    <input type="radio" checked="" name="radio" value="sunhuai"/>
+                </label>
+                <p>卡损坏</p>
+            </div>
+            <div class="ui-form-item ui-form-item-radio ui-border-b" style="padding-left:35px;">
+                <label class="ui-radio" for="radio">
+                    <input type="radio" name="radio" value="diushi"/>
+                </label>
+                <p>卡丢失</p>
+            </div>
+            <div class="ui-form-item ui-form-item-radio ui-border-b" style="padding-left:35px;">
+                <label class="ui-radio" for="radio">
+                    <input type="radio" name="radio" value="zhuanwaisheng"/>
+                </label>
+                <p>转成外省</p>
+            </div>
+            <div class="ui-form-item ui-form-item-radio ui-border-b" style="padding-left:35px;">
+                <label class="ui-radio" for="radio">
+                    <input type="radio" name="radio" value="siwang"/>
+                </label>
+                <p>死亡</p>
+            </div>
+            <div class="ui-form-item ui-form-item-radio ui-border-b" style="padding-left:35px;">
+                <label class="ui-radio" for="radio">
+                    <input type="radio" name="radio" value="qita"/>
+                </label>
+                <p>其它</p>
+            </div>
+            <div class="ui-btn-wrap" style="padding:10px 10px;">
+                <button id="tijiao" class="ui-btn-lg ui-btn-primary">挂失</button>
+            </div>
+            <div class="form_1" style="padding-top:0;">
+                <p class="form_1_p">温馨提示：社保卡挂失办理的是医保功能业务，如需办理金融功能挂失请到相应的银行网点办理。</p>
+            </div>
+
+        </div>
+    </div>
+    <!---->
+</section>
+<div class="bottom">本服务由石家庄市人力资源和社会保障局提供</div>
+</body>
+</html>
+
+<script>
+    $(function () {
+        // $('.ui-container').html('<h3 style="margin: 20px;">正在升级改造中，给您带来不便敬请谅解。</h3>');
+        // return
+        let params = window.location.href.split('?')[1]
+        params = params ? '?' + params : ''
+        $('#tijiao').click(function () {
+            var radio = $('input:radio[name="radio"]:checked').val();
+            if (confirm("确定要挂失吗？")) {
+                var radio = $("input[name='radio']").val();
+                //alert(radio);
+                $.post("zsgs" + params, function (res) {
+                    if (res.statusCode == 200) {
+                        alert(res.message);
+                        location.href = "https://ssc.mohrss.gov.cn/indep/cardInfo";
+                    } else {
+                        alert(res.message);
+                    }
+                });
+            } else {
+                return false;
+            }
+        })
+    })
+</script>

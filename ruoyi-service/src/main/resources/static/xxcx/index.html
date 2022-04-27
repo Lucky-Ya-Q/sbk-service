@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <title>社会保障卡</title>
+    <script type="text/javascript" src="../common/js/fr.js" charset="UTF-8"></script>
+    <link rel="stylesheet" href="../common/css/frozen.css">
+    <link rel="stylesheet" href="../common/css/demo.css">
+    <link rel="stylesheet" href="../common/css/form.css">
+    <style type="text/css">
+        .ui-list-info {
+            color: #18b4ed;
+        }
+
+        .ui-list-action {
+            width: 53%;
+        }
+
+        .bottom {
+            width: 100%;
+            text-align: center;
+            color: red;
+            font-size: 12px;
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+    <script src="../common/js/zepto.min.js"></script>
+    <script src="../common/js/frozen.js"></script>
+
+</head>
+
+<body ontouchstart>
+<header class="ui-header ui-header-positive ui-border-b">
+    <h1>社会保障卡基本信息</h1>
+    <!--    <h1>系统温馨提示</h1>-->
+    <p></p>
+</header>
+<!---->
+<section id="list">
+    <div class="demo-item">
+        <div class="demo-block" style="margin-top:46px;">
+
+            <ul class="ui-list ui-list-text ui-border-tb">
+
+                <li class="ui-border-t">
+                    <div class="ui-list-info">
+                        <h4>姓名</h4>
+                    </div>
+                    <div class="ui-list-action name"></div>
+                </li>
+                <li class="ui-border-t">
+                    <div class="ui-list-info">
+                        <h4>身份证号</h4>
+                    </div>
+                    <div class="ui-list-action idcard"></div>
+                </li>
+                <li class="ui-border-t">
+                    <div class="ui-list-info">
+                        <h4>性别</h4>
+                    </div>
+                    <div class="ui-list-action sex"></div>
+                </li>
+                <li class="ui-border-t">
+                    <div class="ui-list-info">
+                        <h4>出生日期</h4>
+                    </div>
+                    <div class="ui-list-action csrq"></div>
+                </li>
+                <li class="ui-border-t">
+                    <div class="ui-list-info">
+                        <h4>地址</h4>
+                    </div>
+                    <div class="ui-list-action address"></div>
+                </li>
+                <li class="ui-border-t">
+                    <div class="ui-list-info">
+                        <h4>社保卡号</h4>
+                    </div>
+                    <div class="ui-list-action Ssciccard"></div>
+                </li>
+                <li class="ui-border-t">
+                    <div class="ui-list-info">
+                        <h4>联系电话</h4>
+                    </div>
+                    <div class="ui-list-action phone"></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+<div class="bottom">本服务由石家庄市人力资源和社会保障局提供</div>
+<script>
+    $(function () {
+        // $('.ui-list').html('<h3 style="margin: 20px;">正在升级改造中，给您带来不便敬请谅解。</h3>');
+        // return
+        let params = window.location.href.split('?')[1]
+        params = params ? '?' + params : ''
+        $.get("/api/sbk/base/jbxxcx" + params, function (data) {
+            console.log(data)
+            $('.name').html(data.data[0])
+            $('.idcard').html(data.data[1])
+            $('.sex').html(data.data[3] === '1' ? '男' : '女')
+            $('.csrq').html(data.data[4])
+            $('.address').html(data.data[9])
+            $('.Ssciccard').html(data.data[10])
+            $('.phone').html(data.data[12])
+        })
+    })
+</script>
+</body>
+</html>

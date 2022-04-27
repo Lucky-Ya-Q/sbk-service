@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <title>社会保障卡</title>
+    <script type="text/javascript" src="../common/js/fr.js" charset="UTF-8"></script>
+    <link rel="stylesheet" href="../common/css/frozen.css">
+    <link rel="stylesheet" href="../common/css/demo.css">
+    <link rel="stylesheet" href="../common/css/form.css">
+    <script src="../common/js/zepto.min.js"></script>
+    <script src="../common/js/frozen.js"></script>
+    <script type="text/javascript" src="../common/js/jquery-1.8.3.min.js"></script>
+    <style>
+        .bottom{
+            width: 100%;
+            text-align: center;
+            color: red;
+            font-size: 12px;
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+
+<body ontouchstart>
+<header class="ui-header ui-header-positive ui-border-b">
+        <h1>社会保障卡密码修改</h1>
+<!--    <h1>系统温馨提示</h1>-->
+    <p></p>
+</header>
+
+<section class="ui-container">
+    <div class="demo-item">
+        <div class="demo-block" style="margin-top:20px;">
+            <section class="ui-placehold-img">
+                <span style="background-image:url(../common/img/si.png);"></span>
+            </section>
+        </div>
+        <!---->
+        <div class="demo-block">
+            <div class="ui-form ui-border-t">
+                <!-- <form id="form1" method="post" action="{$weburl}{:url('Newpasswordsbk/updatepassword')}"> -->
+                <div class="ui-form-item ui-border-b">
+                    <label style="width:105px;">
+                        原社保卡密码
+                    </label>
+                    <input id="password" name="password" type="password" placeholder="请输入原社保卡密码"
+                           style="padding-left: 105px;"
+                    />
+                </div>
+                <div class="ui-form-item ui-border-b">
+                    <label style="width:105px;">
+                        新社保卡密码
+                    </label>
+                    <input id="newpassword" name="newpassword" type="password" placeholder="请输入新社保卡密码"
+                           style="padding-left: 105px;"
+                    />
+                </div>
+                <div class="ui-form-item ui-border-b">
+                    <label style="width:105px;">
+                        确认新密码
+                    </label>
+                    <input id="newpassword1" name="newpassword1" type="password" placeholder="请再次输入新密码"
+                           style="padding-left: 105px;"
+                    />
+                </div>
+                <div class="ui-btn-wrap" style="margin:10px 0 20px 0;">
+                    <button id="tijiao" class="ui-btn-lg ui-btn-primary">修改</button>
+                </div>
+                <!-- </form> -->
+            </div>
+        </div>
+    </div>
+    <!---->
+
+</section>
+<div class="bottom">本服务由石家庄市人力资源和社会保障局提供</div>
+<script>
+    $(function () {
+        // $('.ui-container').html('<h3 style="margin: 20px;">正在升级改造中，给您带来不便敬请谅解。</h3>');
+        // return
+        let params = window.location.href.split('?')[1]
+        params = params ? '?' + params : ''
+        $('#tijiao').click(function () {
+            var password = $('#password').val();
+            var newpassword = $('#newpassword').val();
+            var newpassword1 = $('#newpassword1').val();
+            if (newpassword!==newpassword1){
+                alert("两次密码输入不一致")
+            }else if (password===newpassword){
+                alert("新密码和旧密码相同")
+            }else {
+                $.post("update" + params + '&oldPassword=' + password + '&newPassword=' + newpassword, function (res) {
+                    if (res.statusCode == 200) {
+                        alert('实体社保卡密码修改成功');
+                        location.href = "https://ssc.mohrss.gov.cn/indep/cardInfo";
+                    } else {
+                        alert(res.message);
+                    }
+                });
+            }
+        })
+    })
+</script>
+
+</body>
+</html>

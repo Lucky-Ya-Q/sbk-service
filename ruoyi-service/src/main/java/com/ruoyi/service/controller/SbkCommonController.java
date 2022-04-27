@@ -1,5 +1,6 @@
 package com.ruoyi.service.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.exception.ServiceException;
@@ -26,7 +27,15 @@ public class SbkCommonController {
 
     protected SbkUser getSbkUser() {
         String security = request.getParameter("security");
-        String signNo = JSON.parseObject(AESUtils.decrypt(security, "6vffkptbol2tf7bk")).getString("signNo");
+        if (StrUtil.isEmpty(security)) {
+            throw new ServiceException("security参数不能为空");
+        }
+        String signNo = null;
+        try {
+            signNo = JSON.parseObject(AESUtils.decrypt(security, "6vffkptbol2tf7bk")).getString("signNo");
+        } catch (Exception e) {
+            throw new ServiceException("获取签发号错误");
+        }
         String esscNo = csbService.auth_encrypt(signNo).getString("esscNo");
         // 电子社保卡基本信息
         Result result = sbkService.getResult("0811015", esscNo);
