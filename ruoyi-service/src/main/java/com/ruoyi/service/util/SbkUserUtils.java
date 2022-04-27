@@ -1,31 +1,25 @@
-package com.ruoyi.service.controller;
+package com.ruoyi.service.util;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.fastjson.JSON;
-import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.service.domain.SbkUser;
 import com.ruoyi.service.dto.Result;
 import com.ruoyi.service.service.CSBService;
 import com.ruoyi.service.service.SbkService;
-import com.ruoyi.service.util.AESUtils;
-import com.ruoyi.service.util.SbkParamUtils;
 import com.tecsun.sm.utils.ParamUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
 
-public class SbkCommonController {
-    @Autowired
-    private HttpServletRequest request;
-    @Autowired
-    private CSBService csbService;
-    @Autowired
-    protected SbkService sbkService;
+public class SbkUserUtils {
+    public static SbkUser getSbkUser(){
+        HttpServletRequest request = SpringUtil.getBean(HttpServletRequest.class);
+        CSBService csbService = SpringUtil.getBean(CSBService.class);
+        SbkService sbkService = SpringUtil.getBean(SbkService.class);
 
-    protected SbkUser getSbkUser() {
         String security = request.getParameter("security");
         if (StrUtil.isEmpty(security)) {
             throw new ServiceException("security参数不能为空");
@@ -52,29 +46,12 @@ public class SbkCommonController {
 
         String[] dzsbkjbxxArr = dzsbkjbxx.split("\\|");
 
-        SbkUser sbkUser = new SbkUser();
-        sbkUser.setAab301(dzsbkjbxxArr[0]);
-        sbkUser.setAaz500(dzsbkjbxxArr[1]);
-        sbkUser.setAaz501(dzsbkjbxxArr[2]);
-        sbkUser.setAac002(dzsbkjbxxArr[3]);
-        sbkUser.setAac003(dzsbkjbxxArr[4]);
-        sbkUser.setAaz502(dzsbkjbxxArr[5]);
-        return sbkUser;
-    }
-
-    protected AjaxResult toAjax(Result result) {
-        if ("200".equals(result.getStatusCode())) {
-            return AjaxResult.success(result.getMessage());
-        } else {
-            return AjaxResult.error(result.getMessage());
-        }
-    }
-
-    protected AjaxResult toAjax(Result result, String success) {
-        if ("200".equals(result.getStatusCode())) {
-            return AjaxResult.success(success);
-        } else {
-            return AjaxResult.error(result.getMessage());
-        }
+        return new SbkUser()
+                .setAab301(dzsbkjbxxArr[0])
+                .setAaz500(dzsbkjbxxArr[1])
+                .setAaz501(dzsbkjbxxArr[2])
+                .setAac002(dzsbkjbxxArr[3])
+                .setAac003(dzsbkjbxxArr[4])
+                .setAaz502(dzsbkjbxxArr[5]);
     }
 }
