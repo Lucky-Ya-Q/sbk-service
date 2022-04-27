@@ -17,14 +17,22 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
+<!--        <el-button-->
+<!--          type="primary"-->
+<!--          plain-->
+<!--          icon="el-icon-plus"-->
+<!--          size="mini"-->
+<!--          @click="handleAdd"-->
+<!--          v-hasPermi="['service:buka:add']"-->
+<!--        >新增</el-button>-->
         <el-button
-          type="primary"
+          type="info"
           plain
-          icon="el-icon-plus"
+          icon="el-icon-upload2"
           size="mini"
-          @click="handleAdd"
+          @click="handleImport"
           v-hasPermi="['service:buka:add']"
-        >新增</el-button>
+        >导入</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -90,7 +98,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
