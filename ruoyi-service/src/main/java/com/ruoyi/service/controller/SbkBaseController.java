@@ -1,15 +1,10 @@
 package com.ruoyi.service.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.service.domain.SbkUser;
 import com.ruoyi.service.dto.FwmmxgParam;
 import com.ruoyi.service.dto.Result;
 import com.ruoyi.service.dto.RyjcxxbgParam;
-import com.ruoyi.service.service.CSBService;
-import com.ruoyi.service.service.SbkService;
-import com.ruoyi.service.util.AESUtils;
 import com.ruoyi.service.util.SbkParamUtils;
 import com.tecsun.sm.utils.ParamUtils;
 import io.swagger.annotations.Api;
@@ -22,7 +17,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,13 +24,7 @@ import java.util.Map;
 @Api(tags = "社保卡基础功能")
 @RestController
 @RequestMapping("/api/sbk/base")
-public class SbkBaseController {
-    @Autowired
-    private HttpServletRequest request;
-    @Autowired
-    private CSBService csbService;
-    @Autowired
-    private SbkService sbkService;
+public class SbkBaseController extends SbkCommonController {
     @Autowired
     private RestTemplate restTemplate;
 
@@ -145,51 +133,5 @@ public class SbkBaseController {
 
         HttpEntity<Object> httpEntity = new HttpEntity<>(hashMap, httpHeaders);
         return restTemplate.postForObject(url, httpEntity, String.class);
-    }
-
-    private SbkUser getSbkUser() {
-        String security = request.getParameter("security");
-        String signNo = JSON.parseObject(AESUtils.decrypt(security, "6vffkptbol2tf7bk")).getString("signNo");
-        String esscNo = csbService.auth_encrypt(signNo).getString("esscNo");
-        // 电子社保卡基本信息
-        Result result = sbkService.getResult("0811015", esscNo);
-        if (!"200".equals(result.getStatusCode())) {
-            throw new ServiceException(result.getMessage());
-        }
-        Map<String, String> data = (Map<String, String>) result.getData();
-        String dzsbkjbxx = null;
-        try {
-            dzsbkjbxx = ParamUtils.decrypted(SbkParamUtils.PRIVATEKEY, data.get("ReturnResult"));
-        } catch (IOException e) {
-            throw new ServiceException(e.getMessage());
-        }
-
-        // String dzsbkjbxx = "发卡地行政区划代码|AD0351899|卡识别码|130125200002094513|刘元博|社保卡状态";
-        String[] dzsbkjbxxArr = dzsbkjbxx.split("\\|");
-
-        SbkUser sbkUser = new SbkUser();
-        sbkUser.setAab301(dzsbkjbxxArr[0]);
-        sbkUser.setAaz500(dzsbkjbxxArr[1]);
-        sbkUser.setAaz501(dzsbkjbxxArr[2]);
-        sbkUser.setAac002(dzsbkjbxxArr[3]);
-        sbkUser.setAac003(dzsbkjbxxArr[4]);
-        sbkUser.setAaz502(dzsbkjbxxArr[5]);
-        return sbkUser;
-    }
-
-    private AjaxResult toAjax(Result result) {
-        if ("200".equals(result.getStatusCode())) {
-            return AjaxResult.success(result.getMessage());
-        } else {
-            return AjaxResult.error(result.getMessage());
-        }
-    }
-
-    private AjaxResult toAjax(Result result, String success) {
-        if ("200".equals(result.getStatusCode())) {
-            return AjaxResult.success(success);
-        } else {
-            return AjaxResult.error(result.getMessage());
-        }
     }
 }
