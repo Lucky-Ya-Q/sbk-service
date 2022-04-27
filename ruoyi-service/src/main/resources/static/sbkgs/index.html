@@ -100,11 +100,11 @@
                 var radio = $("input[name='radio']").val();
                 //alert(radio);
                 $.post("zsgs" + params, function (res) {
-                    if (res.statusCode == 200) {
-                        alert(res.message);
+                    if (res.code === 200) {
+                        alert(res.msg);
                         location.href = "https://ssc.mohrss.gov.cn/indep/cardInfo";
                     } else {
-                        alert(res.message);
+                        alert(res.msg);
                     }
                 });
             } else {

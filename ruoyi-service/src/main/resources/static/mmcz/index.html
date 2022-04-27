@@ -61,12 +61,12 @@
         params = params ? '?' + params : ''
         $('#tijiao').click(function () {
             $.post("update" + params, function (res) {
-                if (res.statusCode == 200) {
+                if (res.code === 200) {
                     var info = '实体社保卡密码已重置为123456';
                     alert(info);
                     location.href = "https://ssc.mohrss.gov.cn/indep/cardInfo";
                 } else {
-                    alert(res.message);
+                    alert(res.msg);
                 }
             });
         })

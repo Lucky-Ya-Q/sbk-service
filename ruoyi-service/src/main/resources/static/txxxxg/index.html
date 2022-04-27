@@ -73,16 +73,16 @@
 
         $('#tijiao').click(function () {
             var tel = $('#tel').val();
-            if (tel.length != 11) {
+            if (tel.length !== 11) {
                 alert('请输入11位手机号');
                 return;
             }
             $.post("update" + params + '&phone=' + tel, function (res) {
-                if (res.statusCode == 200) {
-                    alert(res.message);
+                if (res.code === 200) {
+                    alert(res.msg);
                     location.href = "https://ssc.mohrss.gov.cn/indep/cardInfo";
                 } else {
-                    alert(res.message);
+                    alert(res.msg);
                 }
             });
         })

@@ -118,7 +118,7 @@ public class SbkBaseController extends SbkCommonController {
      */
     @ApiOperation("公积金查询")
     @GetMapping("/gjjcx")
-    public Object gjjcx() {
+    public AjaxResult gjjcx() {
         SbkUser sbkUser = getSbkUser();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -132,6 +132,6 @@ public class SbkBaseController extends SbkCommonController {
         hashMap.put("zjhm", sbkUser.getAac002());
 
         HttpEntity<Object> httpEntity = new HttpEntity<>(hashMap, httpHeaders);
-        return restTemplate.postForObject(url, httpEntity, String.class);
+        return AjaxResult.success(restTemplate.postForObject(url, httpEntity, String.class));
     }
 }
