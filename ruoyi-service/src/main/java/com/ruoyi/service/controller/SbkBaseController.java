@@ -45,7 +45,7 @@ public class SbkBaseController {
      */
     @ApiOperation("人员基础信息变更")
     @PostMapping("/ryjcxxbg")
-    public AjaxResult ryjcxxbg(@RequestBody @Validated RyjcxxbgParam ryjcxxbgParam) throws IOException {
+    public AjaxResult ryjcxxbg(@RequestBody @Validated RyjcxxbgParam ryjcxxbgParam) {
         SbkUser sbkUser = getSbkUser();
         // 人员基础信息变更
         String keyInfo = sbkUser.getAac002() + "|" + sbkUser.getAac003() + "|" + ryjcxxbgParam.getJzdz() + "|" + ryjcxxbgParam.getYddh() + "|" + ryjcxxbgParam.getQsrq() + "|" + ryjcxxbgParam.getZzrq() + "|" + ryjcxxbgParam.getZy();
@@ -77,7 +77,7 @@ public class SbkBaseController {
      */
     @ApiOperation("解挂")
     @PostMapping("/jg")
-    public AjaxResult jg() throws IOException {
+    public AjaxResult jg() {
         SbkUser sbkUser = getSbkUser();
         // 解挂
         String keyInfo = sbkUser.getAac002() + "|" + sbkUser.getAac003() + "|" + sbkUser.getAaz500();
@@ -90,7 +90,7 @@ public class SbkBaseController {
      */
     @ApiOperation("正式挂失")
     @PostMapping("/zsgs")
-    public AjaxResult zsgs() throws IOException {
+    public AjaxResult zsgs() {
         SbkUser sbkUser = getSbkUser();
         // 正式挂失
         String keyInfo = sbkUser.getAac002() + "|" + sbkUser.getAac003() + "|" + sbkUser.getAaz500();
@@ -103,7 +103,7 @@ public class SbkBaseController {
      */
     @ApiOperation("服务密码重置")
     @PostMapping("/fwmmcz")
-    public AjaxResult fwmmcz() throws IOException {
+    public AjaxResult fwmmcz() {
         SbkUser sbkUser = getSbkUser();
         String password = "123456";
         // 服务密码重置
@@ -117,7 +117,7 @@ public class SbkBaseController {
      */
     @ApiOperation("服务密码修改")
     @PostMapping("/fwmmxg")
-    public AjaxResult fwmmxg(@RequestBody @Validated FwmmxgParam fwmmxgParam) throws IOException {
+    public AjaxResult fwmmxg(@RequestBody @Validated FwmmxgParam fwmmxgParam) {
         SbkUser sbkUser = getSbkUser();
         // 服务密码修改
         String keyInfo = sbkUser.getAac002() + "|" + sbkUser.getAac003() + "|" + sbkUser.getAaz500() + "|" + fwmmxgParam.getOldPassword() + "|" + fwmmxgParam.getNewPassword();
@@ -130,7 +130,7 @@ public class SbkBaseController {
      */
     @ApiOperation("公积金查询")
     @GetMapping("/gjjcx")
-    public Object gjjcx() throws IOException {
+    public Object gjjcx() {
         SbkUser sbkUser = getSbkUser();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -147,7 +147,7 @@ public class SbkBaseController {
         return restTemplate.postForObject(url, httpEntity, String.class);
     }
 
-    private SbkUser getSbkUser() throws IOException {
+    private SbkUser getSbkUser() {
         String security = request.getParameter("security");
         String signNo = JSON.parseObject(AESUtils.decrypt(security, "6vffkptbol2tf7bk")).getString("signNo");
         String esscNo = csbService.auth_encrypt(signNo).getString("esscNo");
@@ -157,7 +157,12 @@ public class SbkBaseController {
             throw new ServiceException(result.getMessage());
         }
         Map<String, String> data = (Map<String, String>) result.getData();
-        String dzsbkjbxx = ParamUtils.decrypted(SbkParamUtils.PRIVATEKEY, data.get("ReturnResult"));
+        String dzsbkjbxx = null;
+        try {
+            dzsbkjbxx = ParamUtils.decrypted(SbkParamUtils.PRIVATEKEY, data.get("ReturnResult"));
+        } catch (IOException e) {
+            throw new ServiceException(e.getMessage());
+        }
 
         // String dzsbkjbxx = "发卡地行政区划代码|AD0351899|卡识别码|130125200002094513|刘元博|社保卡状态";
         String[] dzsbkjbxxArr = dzsbkjbxx.split("\\|");
