@@ -50,3 +50,11 @@ export function bukaCount(bukaId) {
     method: 'get'
   })
 }
+
+// 补卡
+export function buhuanka() {
+  return request({
+    url: '/service/customer/buka',
+    method: 'post'
+  })
+}

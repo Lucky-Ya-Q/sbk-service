@@ -85,12 +85,12 @@
         >导出</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="primary" plain size="mini" :loading="sfybk.loading">
+        <el-button type="primary" plain size="mini" :loading="sfybk.loading" @click="buka">
           开始补卡
         </el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain size="mini">
+        <el-button type="danger" plain size="mini" @click="stop">
           停止补卡
         </el-button>
       </el-col>
@@ -231,8 +231,7 @@
 </template>
 
 <script>
-import { listCustomer, getCustomer, delCustomer, addCustomer, updateCustomer } from "@/api/service/customer";
-import {bukaCount} from "../../../api/service/customer";
+import { listCustomer, getCustomer, delCustomer, addCustomer, updateCustomer, buhuanka, bukaCount } from "@/api/service/customer";
 
 export default {
   name: "Customer",
@@ -240,6 +239,7 @@ export default {
   data() {
     return {
       sfybk: {
+        task: null,
         loading: false,
         Y: 0,
         N: 0,
@@ -289,6 +289,9 @@ export default {
     this.queryParams.bukaId = this.$route.query.bukaId;
     this.getList();
   },
+  beforeDestroy() {
+    this.stop();
+  },
   methods: {
     /** 查询客户信息列表 */
     getList() {
@@ -303,6 +306,30 @@ export default {
         this.sfybk.N = response.data.N
         this.sfybk.W = response.data.W
       });
+    },
+    buka() {
+      if (!this.sfybk.task){
+        this.sfybk.loading = true
+        this.sfybk.task = setInterval(() => {
+          if (this.sfybk.W === 0) {
+            this.stop()
+          } else {
+            // 调用检测接口
+            buhuanka().then(response => {
+              // console.log(response)
+            }).finally(() => {
+              this.getList()
+            })
+          }
+        },3000)
+      }
+    },
+    stop() {
+      if (this.sfybk.task){
+        this.sfybk.loading = false
+        clearInterval(this.sfybk.task)
+        this.sfybk.task = null
+      }
     },
     // 取消按钮
     cancel() {

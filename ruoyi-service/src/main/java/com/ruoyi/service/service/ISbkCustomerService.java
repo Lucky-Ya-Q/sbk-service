@@ -1,5 +1,6 @@
 package com.ruoyi.service.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -15,4 +16,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface ISbkCustomerService extends IService<SbkCustomer>
 {
     Map<String, Integer> bukaCount(Long bukaId);
+
+    void buka() throws IOException;
 }

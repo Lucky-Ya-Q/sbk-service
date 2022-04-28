@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -117,5 +118,14 @@ public class SbkCustomerController extends BaseController {
     public AjaxResult bukaCount(@PathVariable("bukaId") Long bukaId) {
         Map<String, Integer> map = sbkCustomerService.bukaCount(bukaId);
         return AjaxResult.success(map);
+    }
+
+    /**
+     * 补卡
+     */
+    @PostMapping("/buka")
+    public AjaxResult buka() throws IOException {
+        sbkCustomerService.buka();
+        return AjaxResult.success();
     }
 }
