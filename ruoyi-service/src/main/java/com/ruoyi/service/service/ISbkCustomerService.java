@@ -1,6 +1,8 @@
 package com.ruoyi.service.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.service.domain.SbkCustomer;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -11,4 +13,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @date 2022-04-28
  */
 public interface ISbkCustomerService extends IService<SbkCustomer>
-{}
+{
+    Map<String, Integer> bukaCount(Long bukaId);
+}

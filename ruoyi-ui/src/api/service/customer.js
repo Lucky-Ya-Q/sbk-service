@@ -42,3 +42,11 @@ export function delCustomer(id) {
     method: 'delete'
   })
 }
+
+// 统计补卡数量
+export function bukaCount(bukaId) {
+  return request({
+    url: '/service/customer/bukaCount/' + bukaId,
+    method: 'get'
+  })
+}

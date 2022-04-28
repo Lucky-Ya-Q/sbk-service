@@ -84,6 +84,31 @@
           v-hasPermi="['service:customer:export']"
         >导出</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button type="primary" plain size="mini" :loading="sfybk.loading">
+          开始补卡
+        </el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button type="danger" plain size="mini">
+          停止补卡
+        </el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-tag effect="plain">
+          已补卡 {{sfybk.Y}}
+        </el-tag>
+      </el-col>
+      <el-col :span="1.5">
+        <el-tag effect="plain">
+          未补卡 {{sfybk.N}}
+        </el-tag>
+      </el-col>
+      <el-col :span="1.5">
+        <el-tag effect="plain">
+          未检测 {{sfybk.W}}
+        </el-tag>
+      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -207,12 +232,19 @@
 
 <script>
 import { listCustomer, getCustomer, delCustomer, addCustomer, updateCustomer } from "@/api/service/customer";
+import {bukaCount} from "../../../api/service/customer";
 
 export default {
   name: "Customer",
   dicts: ['sys_yes_no'],
   data() {
     return {
+      sfybk: {
+        loading: false,
+        Y: 0,
+        N: 0,
+        W: 0
+      },
       // 遮罩层
       loading: true,
       // 选中数组
@@ -265,6 +297,11 @@ export default {
         this.customerList = response.rows;
         this.total = response.total;
         this.loading = false;
+      });
+      bukaCount(this.queryParams.bukaId).then(response => {
+        this.sfybk.Y = response.data.Y
+        this.sfybk.N = response.data.N
+        this.sfybk.W = response.data.W
       });
     },
     // 取消按钮

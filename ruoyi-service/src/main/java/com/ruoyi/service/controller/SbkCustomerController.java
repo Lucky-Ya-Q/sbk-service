@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 客户信息Controller
@@ -107,5 +108,14 @@ public class SbkCustomerController extends BaseController {
     @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(sbkCustomerService.removeBatchByIds(Arrays.asList(ids)));
+    }
+
+    /**
+     * 统计补卡数量
+     */
+    @GetMapping("/bukaCount/{bukaId}")
+    public AjaxResult bukaCount(@PathVariable("bukaId") Long bukaId) {
+        Map<String, Integer> map = sbkCustomerService.bukaCount(bukaId);
+        return AjaxResult.success(map);
     }
 }

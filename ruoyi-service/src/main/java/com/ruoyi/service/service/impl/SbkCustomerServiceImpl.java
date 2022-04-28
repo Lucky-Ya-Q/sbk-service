@@ -1,6 +1,8 @@
 package com.ruoyi.service.service.impl;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,4 +21,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 public class SbkCustomerServiceImpl extends ServiceImpl<SbkCustomerMapper, SbkCustomer> implements ISbkCustomerService
 {
     @Autowired
-    private SbkCustomerMapper sbkCustomerMapper;}
+    private SbkCustomerMapper sbkCustomerMapper;
+
+    @Override
+    public Map<String, Integer> bukaCount(Long bukaId) {
+        return sbkCustomerMapper.bukaCount(bukaId);
+    }
+}

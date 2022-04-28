@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.service.mapper.SbkCustomerMapper">
-
+    <select id="bukaCount" resultType="java.util.Map">
+        select count(if(sfybk = 'Y', 1, null)) Y,
+               count(if(sfybk = 'N', 1, null)) N,
+               count(if(sfybk = 'W', 1, null)) W
+        from sbk_customer
+        where buka_id = #{bukaId}
+    </select>
 </mapper>
