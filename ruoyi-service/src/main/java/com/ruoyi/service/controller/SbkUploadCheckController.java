@@ -69,7 +69,7 @@ public class SbkUploadCheckController extends BaseController
         LambdaQueryWrapper<SbkUploadCheck> queryWrapper = new LambdaQueryWrapper<SbkUploadCheck>()
                 .like(StrUtil.isNotEmpty(sbkUploadCheck.getFileName()), SbkUploadCheck::getFileName, sbkUploadCheck.getFileName());
         List<SbkUploadCheck> list = sbkUploadCheckService.list(queryWrapper);
-        ExcelUtil<SbkUploadCheck> util = new ExcelUtil<SbkUploadCheck>(SbkUploadCheck.class);
+        ExcelUtil<SbkUploadCheck> util = new ExcelUtil<>(SbkUploadCheck.class);
         util.exportExcel(response, list, "检测上传记录数据");
     }
 

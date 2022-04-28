@@ -58,7 +58,7 @@ public class SbkIndexMenuController extends BaseController {
         LambdaQueryWrapper<SbkIndexMenu> queryWrapper = new LambdaQueryWrapper<SbkIndexMenu>()
                 .like(StrUtil.isNotEmpty(sbkIndexMenu.getMenuName()), SbkIndexMenu::getMenuName, sbkIndexMenu.getMenuName());
         List<SbkIndexMenu> list = sbkIndexMenuService.list(queryWrapper);
-        ExcelUtil<SbkIndexMenu> util = new ExcelUtil<SbkIndexMenu>(SbkIndexMenu.class);
+        ExcelUtil<SbkIndexMenu> util = new ExcelUtil<>(SbkIndexMenu.class);
         util.exportExcel(response, list, "首页菜单数据");
     }
 

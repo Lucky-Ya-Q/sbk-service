@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.service.domain.SbkCustomer;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +28,7 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 补卡上传记录Controller
@@ -117,5 +120,25 @@ public class SbkUploadBukaController extends BaseController
     public AjaxResult remove(@PathVariable Long[] bukaIds)
     {
         return toAjax(sbkUploadBukaService.removeBatchByIds(Arrays.asList(bukaIds)));
+    }
+
+    @PostMapping("/importTemplate")
+    public void importTemplate(HttpServletResponse response)
+    {
+        ExcelUtil<SbkCustomer> util = new ExcelUtil<>(SbkCustomer.class);
+        util.importTemplateExcel(response, "用户数据");
+    }
+
+    @Log(title = "补卡上传记录", businessType = BusinessType.IMPORT)
+    @PreAuthorize("@ss.hasPermi('service:buka:add')")
+    @PostMapping("/importData")
+    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
+    {
+        ExcelUtil<SbkCustomer> util = new ExcelUtil<>(SbkCustomer.class);
+        List<SbkCustomer> userList = util.importExcel(file.getInputStream());
+        for (SbkCustomer sbkCustomer : userList) {
+            System.out.println(sbkCustomer);
+        }
+        return AjaxResult.success(userList);
     }
 }

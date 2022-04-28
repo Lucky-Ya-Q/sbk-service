@@ -58,7 +58,7 @@ public class SbkScenicSpotsController extends BaseController {
         LambdaQueryWrapper<SbkScenicSpots> queryWrapper = new LambdaQueryWrapper<SbkScenicSpots>()
                 .eq(StrUtil.isNotEmpty(sbkScenicSpots.getTitle()), SbkScenicSpots::getTitle, sbkScenicSpots.getTitle());
         List<SbkScenicSpots> list = sbkScenicSpotsService.list(queryWrapper);
-        ExcelUtil<SbkScenicSpots> util = new ExcelUtil<SbkScenicSpots>(SbkScenicSpots.class);
+        ExcelUtil<SbkScenicSpots> util = new ExcelUtil<>(SbkScenicSpots.class);
         util.exportExcel(response, list, "旅游景点数据");
     }
 
