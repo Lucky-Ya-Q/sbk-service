@@ -1,14 +1,14 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="补卡ID" prop="bukaId">
-        <el-input
-          v-model="queryParams.bukaId"
-          placeholder="请输入补卡ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
+<!--      <el-form-item label="补卡ID" prop="bukaId">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.bukaId"-->
+<!--          placeholder="请输入补卡ID"-->
+<!--          clearable-->
+<!--          @keyup.enter.native="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item label="是否已补卡" prop="sfybk">
         <el-select v-model="queryParams.sfybk" placeholder="请选择是否已补卡" clearable>
           <el-option
@@ -91,26 +91,26 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="ID" align="center" prop="id" />
       <el-table-column label="补卡ID" align="center" prop="bukaId" />
-      <el-table-column label="是否已补卡" align="center" prop="sfybk">
+      <el-table-column label="是否已补卡" align="center" prop="sfybk" width="100">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_yes_no" :value="scope.row.sfybk"/>
         </template>
       </el-table-column>
       <el-table-column label="姓名" align="center" prop="xm" />
       <el-table-column label="证件种类" align="center" prop="zjzl" />
-      <el-table-column label="证件号码" align="center" prop="zjhm" />
-      <el-table-column label="证件有效期开始时间" align="center" prop="zjyxqkssj" />
-      <el-table-column label="证件有效期结束时间" align="center" prop="zjyxqjssj" />
+      <el-table-column label="证件号码" align="center" prop="zjhm" width="200"/>
+      <el-table-column label="证件有效期开始时间" align="center" prop="zjyxqkssj" width="150"/>
+      <el-table-column label="证件有效期结束时间" align="center" prop="zjyxqjssj" width="150"/>
       <el-table-column label="性别" align="center" prop="xb" />
       <el-table-column label="国籍" align="center" prop="gj" />
       <el-table-column label="民族" align="center" prop="mz" />
-      <el-table-column label="出生日期" align="center" prop="csrq" />
+      <el-table-column label="出生日期" align="center" prop="csrq" width="100"/>
       <el-table-column label="职业" align="center" prop="zy" />
-      <el-table-column label="联系方式" align="center" prop="lxfs" />
-      <el-table-column label="地址" align="center" prop="dz" />
+      <el-table-column label="联系方式" align="center" prop="lxfs" width="150"/>
+      <el-table-column label="地址" align="center" prop="dz" width="300"/>
       <el-table-column label="银行名称" align="center" prop="yhmc" />
       <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="150">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -129,7 +129,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -140,7 +140,7 @@
 
     <!-- 添加或修改客户信息对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="补卡ID" prop="bukaId">
           <el-input v-model="form.bukaId" placeholder="请输入补卡ID" />
         </el-form-item>
@@ -254,6 +254,7 @@ export default {
     };
   },
   created() {
+    this.queryParams.bukaId = this.$route.query.bukaId;
     this.getList();
   },
   methods: {

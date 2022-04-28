@@ -95,6 +95,13 @@
             @click="handleDelete(scope.row)"
             v-hasPermi="['service:buka:remove']"
           >删除</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDetails(scope.row)"
+            v-hasPermi="['service:customer:list']"
+          >详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -304,6 +311,10 @@ export default {
         this.getList();
         this.$modal.msgSuccess("删除成功");
       }).catch(() => {});
+    },
+    /** 详情按钮操作 */
+    handleDetails(row) {
+      this.$router.push({path: 'customer',query: {bukaId: row.bukaId}})
     },
     /** 导出按钮操作 */
     handleExport() {

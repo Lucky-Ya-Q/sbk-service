@@ -54,7 +54,8 @@ public class SbkUploadBukaController extends BaseController
     {
         startPage();
         LambdaQueryWrapper<SbkUploadBuka> queryWrapper = new LambdaQueryWrapper<SbkUploadBuka>()
-                .like(StrUtil.isNotEmpty(sbkUploadBuka.getFileName()), SbkUploadBuka::getFileName, sbkUploadBuka.getFileName());
+                .like(StrUtil.isNotEmpty(sbkUploadBuka.getFileName()), SbkUploadBuka::getFileName, sbkUploadBuka.getFileName())
+                .orderByDesc(SbkUploadBuka::getCreateTime);
         List<SbkUploadBuka> list = sbkUploadBukaService.list(queryWrapper);
         return getDataTable(list);
     }
@@ -69,7 +70,8 @@ public class SbkUploadBukaController extends BaseController
     public void export(HttpServletResponse response, SbkUploadBuka sbkUploadBuka)
     {
         LambdaQueryWrapper<SbkUploadBuka> queryWrapper = new LambdaQueryWrapper<SbkUploadBuka>()
-                .like(StrUtil.isNotEmpty(sbkUploadBuka.getFileName()), SbkUploadBuka::getFileName, sbkUploadBuka.getFileName());
+                .like(StrUtil.isNotEmpty(sbkUploadBuka.getFileName()), SbkUploadBuka::getFileName, sbkUploadBuka.getFileName())
+                .orderByDesc(SbkUploadBuka::getCreateTime);
         List<SbkUploadBuka> list = sbkUploadBukaService.list(queryWrapper);
         ExcelUtil<SbkUploadBuka> util = new ExcelUtil<SbkUploadBuka>(SbkUploadBuka.class);
         util.exportExcel(response, list, "补卡上传记录数据");
@@ -119,7 +121,8 @@ public class SbkUploadBukaController extends BaseController
 	@DeleteMapping("/{bukaIds}")
     public AjaxResult remove(@PathVariable Long[] bukaIds)
     {
-        return toAjax(sbkUploadBukaService.removeBatchByIds(Arrays.asList(bukaIds)));
+        sbkUploadBukaService.removeSbkCustomer(Arrays.asList(bukaIds));
+        return AjaxResult.success();
     }
 
     @PostMapping("/importTemplate")
@@ -135,10 +138,9 @@ public class SbkUploadBukaController extends BaseController
     public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
     {
         ExcelUtil<SbkCustomer> util = new ExcelUtil<>(SbkCustomer.class);
-        List<SbkCustomer> userList = util.importExcel(file.getInputStream());
-        for (SbkCustomer sbkCustomer : userList) {
-            System.out.println(sbkCustomer);
-        }
-        return AjaxResult.success(userList);
+        List<SbkCustomer> sbkCustomerList = util.importExcel(file.getInputStream());
+        String fileName = file.getOriginalFilename();
+        sbkUploadBukaService.importSbkCustomer(sbkCustomerList, updateSupport, fileName);
+        return AjaxResult.success();
     }
 }
