@@ -19,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +28,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/sbk/base")
 public class SbkBaseController {
+    @Autowired
+    private HttpServletRequest request;
     @Autowired
     private SbkService sbkService;
     @Autowired
@@ -38,7 +41,7 @@ public class SbkBaseController {
     @ApiOperation("人员基础信息变更")
     @PostMapping("/ryjcxxbg")
     public AjaxResult ryjcxxbg(@RequestBody @Validated RyjcxxbgParam ryjcxxbgParam) {
-        SbkUser sbkUser = SbkUserUtils.getSbkUser();
+        SbkUser sbkUser = SbkUserUtils.getSbkUser(request);
         // 人员基础信息变更
         String keyInfo = sbkUser.getAac002() + "|" + sbkUser.getAac003() + "|" + ryjcxxbgParam.getJzdz() + "|" + ryjcxxbgParam.getYddh() + "|" + ryjcxxbgParam.getQsrq() + "|" + ryjcxxbgParam.getZzrq() + "|" + ryjcxxbgParam.getZy();
         Result result = sbkService.getResult("0821014", keyInfo);
@@ -51,7 +54,7 @@ public class SbkBaseController {
     @ApiOperation("基本信息查询")
     @GetMapping("/jbxxcx")
     public AjaxResult jbxxcx() throws IOException {
-        SbkUser sbkUser = SbkUserUtils.getSbkUser();
+        SbkUser sbkUser = SbkUserUtils.getSbkUser(request);
         // 社保卡基本信息查询
         String keyInfo = sbkUser.getAac002() + "|" + sbkUser.getAac003() + "|" + sbkUser.getAaz500();
         Result result = sbkService.getResult("0811014", keyInfo);
@@ -70,7 +73,7 @@ public class SbkBaseController {
     @ApiOperation("解挂")
     @PostMapping("/jg")
     public AjaxResult jg() {
-        SbkUser sbkUser = SbkUserUtils.getSbkUser();
+        SbkUser sbkUser = SbkUserUtils.getSbkUser(request);
         // 解挂
         String keyInfo = sbkUser.getAac002() + "|" + sbkUser.getAac003() + "|" + sbkUser.getAaz500();
         Result result = sbkService.getResult("0821015", keyInfo);
@@ -83,7 +86,7 @@ public class SbkBaseController {
     @ApiOperation("正式挂失")
     @PostMapping("/zsgs")
     public AjaxResult zsgs() {
-        SbkUser sbkUser = SbkUserUtils.getSbkUser();
+        SbkUser sbkUser = SbkUserUtils.getSbkUser(request);
         // 正式挂失
         String keyInfo = sbkUser.getAac002() + "|" + sbkUser.getAac003() + "|" + sbkUser.getAaz500();
         Result result = sbkService.getResult("0821017", keyInfo);
@@ -96,7 +99,7 @@ public class SbkBaseController {
     @ApiOperation("服务密码重置")
     @PostMapping("/fwmmcz")
     public AjaxResult fwmmcz() {
-        SbkUser sbkUser = SbkUserUtils.getSbkUser();
+        SbkUser sbkUser = SbkUserUtils.getSbkUser(request);
         String password = "123456";
         // 服务密码重置
         String keyInfo = sbkUser.getAac002() + "|" + sbkUser.getAac003() + "|" + sbkUser.getAaz500() + "|" + password + "|";
@@ -110,7 +113,7 @@ public class SbkBaseController {
     @ApiOperation("服务密码修改")
     @PostMapping("/fwmmxg")
     public AjaxResult fwmmxg(@RequestBody @Validated FwmmxgParam fwmmxgParam) {
-        SbkUser sbkUser = SbkUserUtils.getSbkUser();
+        SbkUser sbkUser = SbkUserUtils.getSbkUser(request);
         // 服务密码修改
         String keyInfo = sbkUser.getAac002() + "|" + sbkUser.getAac003() + "|" + sbkUser.getAaz500() + "|" + fwmmxgParam.getOldPassword() + "|" + fwmmxgParam.getNewPassword();
         Result result = sbkService.getResult("0821020", keyInfo);
@@ -123,7 +126,7 @@ public class SbkBaseController {
     @ApiOperation("公积金查询")
     @GetMapping("/gjjcx")
     public AjaxResult gjjcx() {
-        SbkUser sbkUser = SbkUserUtils.getSbkUser();
+        SbkUser sbkUser = SbkUserUtils.getSbkUser(request);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 

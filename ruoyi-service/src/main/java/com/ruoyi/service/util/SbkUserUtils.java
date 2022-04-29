@@ -15,8 +15,7 @@ import java.io.IOException;
 import java.util.Map;
 
 public class SbkUserUtils {
-    public static SbkUser getSbkUser(){
-        HttpServletRequest request = SpringUtil.getBean(HttpServletRequest.class);
+    public static SbkUser getSbkUser(HttpServletRequest request){
         CSBService csbService = SpringUtil.getBean(CSBService.class);
         SbkService sbkService = SpringUtil.getBean(SbkService.class);
 

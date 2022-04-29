@@ -316,7 +316,7 @@ export default {
           } else {
             // 调用检测接口
             buhuanka().then(response => {
-              // console.log(response)
+              this.$modal.msgSuccess(response.msg)
             }).finally(() => {
               this.getList()
             })

@@ -53,11 +53,12 @@ public class SbkCustomerServiceImpl extends ServiceImpl<SbkCustomerMapper, SbkCu
         // 社保卡基本信息查询
         Result jbxxcxResult = sbkService.getResult("0811014", sbkCustomer.getZjhm() + "||");
         if (!"200".equals(jbxxcxResult.getStatusCode())) {
+            sbkCustomer.setSfybk("N");
+            sbkCustomerMapper.updateById(sbkCustomer);
             throw new ServiceException(jbxxcxResult.getMessage());
         }
         Map<String, String> data = (Map<String, String>) jbxxcxResult.getData();
         String jbxxcx = ParamUtils.decrypted(SbkParamUtils.PRIVATEKEY, data.get("ReturnResult"));
-
         String[] jbxxcxArr = jbxxcx.split("\\|");
 
         String sbk_xb = sysDictDataMapper.selectDictLabel("sbk_xb", jbxxcxArr[3]);
@@ -67,41 +68,70 @@ public class SbkCustomerServiceImpl extends ServiceImpl<SbkCustomerMapper, SbkCu
             // 姓名，性别，民族相等并且年龄大于16周岁
             String uuid = IdUtil.simpleUUID(); // 业务单据号
             // 证件类型
-            SysDictData sbk_zjlx = new SysDictData();
-            sbk_zjlx.setDictType("sbk_zjlx");
-            sbk_zjlx.setDictLabel(sbkCustomer.getZjzl());
-            String zjlx = sysDictDataMapper.selectDictDataList(sbk_zjlx).get(0).getDictValue();
+            String zjlx = sysDictDataMapper.selectDictValue("sbk_zjlx", sbkCustomer.getZjzl());
+            if (StrUtil.isEmpty(zjlx)) {
+                sbkCustomer.setSfybk("N");
+                sbkCustomerMapper.updateById(sbkCustomer);
+                throw new ServiceException("证件类型填写错误");
+            }
             // 证件有效期
             String zjyxq = sbkCustomer.getZjyxqkssj() + "-" + sbkCustomer.getZjyxqjssj();
             // 出生日期
             String birth = IdcardUtil.getBirthByIdCard(sbkCustomer.getZjhm());
             // 职业
-            SysDictData sbk_zy = new SysDictData();
-            sbk_zy.setDictType("sbk_zy");
-            sbk_zy.setDictLabel(sbkCustomer.getZy());
-            String zy = sysDictDataMapper.selectDictDataList(sbk_zy).get(0).getDictValue();
+            String zy = sysDictDataMapper.selectDictValue("sbk_zy", sbkCustomer.getZy());
+            if (StrUtil.isEmpty(zy)) {
+                sbkCustomer.setSfybk("N");
+                sbkCustomerMapper.updateById(sbkCustomer);
+                throw new ServiceException("职业填写错误");
+            }
             // 手机
             String phone = jbxxcxArr[12];
             if (StrUtil.isNotEmpty(sbkCustomer.getLxfs())) {
                 phone = sbkCustomer.getLxfs();
             }
             // 银行
-            SysDictData sbk_yh = new SysDictData();
-            sbk_yh.setDictType("sbk_yh");
-            sbk_yh.setDictLabel(sbkCustomer.getZy());
-            String yh = sysDictDataMapper.selectDictDataList(sbk_yh).get(0).getDictValue();
+            String yh = sysDictDataMapper.selectDictValue("sbk_yh", sbkCustomer.getYhmc());
+            if (StrUtil.isEmpty(yh)) {
+                sbkCustomer.setSfybk("N");
+                sbkCustomerMapper.updateById(sbkCustomer);
+                throw new ServiceException("银行填写错误");
+            }
+
+            // 正式挂失
+            sbkService.getResult("0821017", jbxxcxArr[1] + "|" + jbxxcxArr[0] + "|" + jbxxcxArr[10]);
+
+            // 办卡资格校验
+            Result bkzgjyResult = sbkService.getResult("0811011", jbxxcxArr[1] + "|" + jbxxcxArr[0] + "|2");
+            if (!"200".equals(bkzgjyResult.getStatusCode())) {
+                sbkCustomer.setSfybk("N");
+                sbkCustomerMapper.updateById(sbkCustomer);
+                throw new ServiceException(bkzgjyResult.getMessage());
+            }
+            Map<String, String> bkzgjyData = (Map<String, String>) bkzgjyResult.getData();
+            String bkzgjy = ParamUtils.decrypted(SbkParamUtils.PRIVATEKEY, bkzgjyData.get("ReturnResult"));
+            String[] bkzgjyArr = bkzgjy.split("\\|");
+            if (bkzgjyArr[0].equals("0")) {
+                sbkCustomer.setSfybk("N");
+                sbkCustomerMapper.updateById(sbkCustomer);
+                throw new ServiceException("不可申请补卡");
+            }
+
             // 补换卡申请
-            String keyInfo = uuid + "|" + zjlx + "|" + jbxxcxArr[1] + "|" + jbxxcxArr[0] + "|2|1|" + zjyxq + "|" + jbxxcxArr[3] + "|" + birth + "|CHN|" + jbxxcxArr[6] + "|" + zy + "|" + sbkCustomer.getDz() + "|" + jbxxcxArr[8] + "|" + phone + "||||2||||||||999-130101|1|" + yh + "|||||";
+            String keyInfo = uuid + "|" + zjlx + "|" + jbxxcxArr[1] + "|" + jbxxcxArr[0] + "|2|1|" + zjyxq + "|" + jbxxcxArr[3] + "|" + birth + "|CHN|" + jbxxcxArr[6] + "|" + zy + "|" + sbkCustomer.getDz() + "|" + jbxxcxArr[8] + "|" + phone + "|||" + bkzgjyArr[11] + "|1||||||||999-130101|1|" + yh + "|||||";
             Result bhksqResult = sbkService.getResult("0821013", keyInfo);
             if (!"200".equals(bhksqResult.getStatusCode())) {
+                sbkCustomer.setSfybk("N");
+                sbkCustomerMapper.updateById(sbkCustomer);
                 throw new ServiceException(bhksqResult.getMessage());
             }
-            log.info("补换卡申请：{}", bhksqResult);
+            log.info("keyInfo：{}", keyInfo);
             sbkCustomer.setSfybk("Y");
             sbkCustomerMapper.updateById(sbkCustomer);
         } else {
             sbkCustomer.setSfybk("N");
             sbkCustomerMapper.updateById(sbkCustomer);
+            throw new ServiceException("姓名/性别/民族与原始信息不一致或者年龄小于等于16周岁");
         }
     }
 }
