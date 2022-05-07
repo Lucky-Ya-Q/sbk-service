@@ -80,4 +80,8 @@ public class SbkCustomer extends BaseEntity
     /** 是否已补卡 */
     @Excel(name = "是否已补卡", type = Excel.Type.EXPORT)
     private String sfybk;
+
+    /** 未补卡原因 */
+    @Excel(name = "未补卡原因", type = Excel.Type.EXPORT)
+    private String wbkyy;
 }

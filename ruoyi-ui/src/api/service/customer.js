@@ -52,9 +52,9 @@ export function bukaCount(bukaId) {
 }
 
 // 补卡
-export function buhuanka() {
+export function buhuanka(bukaId) {
   return request({
-    url: '/service/customer/buka',
+    url: '/service/customer/buka/' + bukaId,
     method: 'post'
   })
 }

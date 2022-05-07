@@ -17,5 +17,5 @@ public interface ISbkCustomerService extends IService<SbkCustomer>
 {
     Map<String, Integer> bukaCount(Long bukaId);
 
-    void buka() throws IOException;
+    void buka(Long bukaId);
 }

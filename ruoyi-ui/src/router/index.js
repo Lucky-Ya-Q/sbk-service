@@ -172,6 +172,7 @@ Router.prototype.push = function push(location) {
 
 export default new Router({
   mode: 'history', // 去掉url中的#
+  base: process.env.NODE_ENV === "production" ? "/zrdzsbk/tcard1/" : "/",
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })

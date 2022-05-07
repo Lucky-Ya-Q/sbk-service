@@ -1,5 +1,6 @@
 package com.ruoyi.service.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.ruoyi.service.domain.SbkCustomer;
@@ -14,7 +15,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ISbkUploadBukaService extends IService<SbkUploadBuka>
 {
-    void importSbkCustomer(List<SbkCustomer> sbkCustomerList, boolean updateSupport, String fileName);
+    void importSbkCustomer(List<SbkCustomer> sbkCustomerList, boolean updateSupport, String fileName) throws IOException;
 
     void removeSbkCustomer(List<Long> bukaIdList);
 }

@@ -45,6 +45,7 @@ public class SbkCustomerController extends BaseController {
         startPage();
         LambdaQueryWrapper<SbkCustomer> queryWrapper = new LambdaQueryWrapper<SbkCustomer>()
                 .eq(SbkCustomer::getBukaId, sbkCustomer.getBukaId())
+                .eq(StrUtil.isNotEmpty(sbkCustomer.getSfybk()), SbkCustomer::getSfybk, sbkCustomer.getSfybk())
                 .like(StrUtil.isNotEmpty(sbkCustomer.getXm()), SbkCustomer::getXm, sbkCustomer.getXm())
                 .like(StrUtil.isNotEmpty(sbkCustomer.getZjhm()), SbkCustomer::getZjhm, sbkCustomer.getZjhm());
         List<SbkCustomer> list = sbkCustomerService.list(queryWrapper);
@@ -61,6 +62,7 @@ public class SbkCustomerController extends BaseController {
     public void export(HttpServletResponse response, SbkCustomer sbkCustomer) {
         LambdaQueryWrapper<SbkCustomer> queryWrapper = new LambdaQueryWrapper<SbkCustomer>()
                 .eq(SbkCustomer::getBukaId, sbkCustomer.getBukaId())
+                .eq(StrUtil.isNotEmpty(sbkCustomer.getSfybk()), SbkCustomer::getSfybk, sbkCustomer.getSfybk())
                 .like(StrUtil.isNotEmpty(sbkCustomer.getXm()), SbkCustomer::getXm, sbkCustomer.getXm())
                 .like(StrUtil.isNotEmpty(sbkCustomer.getZjhm()), SbkCustomer::getZjhm, sbkCustomer.getZjhm());
         List<SbkCustomer> list = sbkCustomerService.list(queryWrapper);
@@ -123,9 +125,9 @@ public class SbkCustomerController extends BaseController {
     /**
      * 补卡
      */
-    @PostMapping("/buka")
-    public AjaxResult buka() throws IOException {
-        sbkCustomerService.buka();
+    @PostMapping("/buka/{bukaId}")
+    public AjaxResult buka(@PathVariable("bukaId") Long bukaId) {
+        sbkCustomerService.buka(bukaId);
         return AjaxResult.success();
     }
 }

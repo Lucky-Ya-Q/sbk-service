@@ -86,7 +86,7 @@ service.interceptors.response.use(res => {
       ).then(() => {
         isRelogin.show = false;
         store.dispatch('LogOut').then(() => {
-          location.href = '/index';
+          location.href = process.env.NODE_ENV === 'production' ? '/zrdzsbk/tcard1/index' : '/index';
         })
       }).catch(() => {
         isRelogin.show = false;

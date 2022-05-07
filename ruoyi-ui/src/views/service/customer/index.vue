@@ -315,8 +315,8 @@ export default {
             this.stop()
           } else {
             // 调用检测接口
-            buhuanka().then(response => {
-              this.$modal.msgSuccess(response.msg)
+            buhuanka(this.queryParams.bukaId).then(response => {
+              // this.$modal.msgSuccess(response.msg)
             }).finally(() => {
               this.getList()
             })
