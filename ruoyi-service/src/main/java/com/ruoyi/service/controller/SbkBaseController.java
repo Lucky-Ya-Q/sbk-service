@@ -1,11 +1,17 @@
 package com.ruoyi.service.controller;
 
+import cn.hutool.core.codec.Base64;
+import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.service.domain.SbkUser;
 import com.ruoyi.service.dto.FwmmxgParam;
 import com.ruoyi.service.dto.Result;
 import com.ruoyi.service.dto.RyjcxxbgParam;
 import com.ruoyi.service.service.SbkService;
+import com.ruoyi.service.util.HttpUtils;
 import com.ruoyi.service.util.SbkParamUtils;
 import com.ruoyi.service.util.SbkUserUtils;
 import com.tecsun.sm.utils.ParamUtils;
@@ -18,11 +24,14 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Api(tags = "社保卡基础功能")
 @RestController
@@ -34,6 +43,8 @@ public class SbkBaseController {
     private SbkService sbkService;
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private RedisCache redisCache;
 
     /**
      * 人员基础信息变更
@@ -140,6 +151,45 @@ public class SbkBaseController {
 
         HttpEntity<Object> httpEntity = new HttpEntity<>(hashMap, httpHeaders);
         return AjaxResult.success(restTemplate.postForObject(url, httpEntity, String.class));
+    }
+
+    /**
+     * 社保卡识别
+     */
+    @ApiOperation("社保卡识别")
+    @PostMapping("/social_security_card")
+    public AjaxResult social_security_card(MultipartFile file) {
+        try {
+            String url = "https://aip.baidubce.com/rest/2.0/ocr/v1/social_security_card";
+            String imgStr = Base64.encode(file.getBytes());
+            String imgParam = URLEncoder.encode(imgStr, "utf-8");
+
+            String param = "image=" + imgParam;
+            String result = HttpUtils.post(url, getAccessToken(), param);
+
+            JSONObject jsonObject = JSON.parseObject(result);
+            String errorMsg = jsonObject.getString("error_msg");
+            if (StrUtil.isNotEmpty(errorMsg)) {
+                return AjaxResult.error(errorMsg);
+            }
+            Object wordsResult = jsonObject.get("words_result");
+            return AjaxResult.success(wordsResult);
+        } catch (Exception e) {
+            return AjaxResult.error(e.getMessage());
+        }
+    }
+
+    private String getAccessToken() {
+        String accessToken = redisCache.getCacheObject("accessToken");
+        if (StrUtil.isNotEmpty(accessToken)) {
+            return accessToken;
+        }
+        String url = "https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=KfkmgdfWa9mKugYz79ois9RT&client_secret=DWMstB19hPgb7THuxrBtZGCrES9dlqUA";
+        String result = restTemplate.getForObject(url, String.class);
+        JSONObject jsonObject = JSON.parseObject(result);
+        accessToken = jsonObject.getString("access_token");
+        redisCache.setCacheObject("accessToken", accessToken, 10, TimeUnit.DAYS);
+        return accessToken;
     }
 
     private AjaxResult toAjax(Result result) {
