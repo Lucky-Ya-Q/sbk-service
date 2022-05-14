@@ -79,6 +79,22 @@ public class CSBServiceImpl implements CSBService {
         return getJSONObject("qrcode_channel_query_encrypt", param);
     }
 
+    /**
+     * 二维码-验码接口
+     *
+     * @param qrCode
+     * @return
+     */
+    @Override
+    public JSONObject qrcode_valid_encrypt(String qrCode, String busiType, String systemName) {
+        // 设置请求参数（json格式)
+        Map<String, String> param = new HashMap<>();
+        param.put("qrCode", qrCode);
+        param.put("busiType", busiType);
+        param.put("systemName", systemName);
+        return getJSONObject("qrcode_valid_encrypt", param);
+    }
+
     private JSONObject getJSONObject(String api, Map<String, String> param) {
         HttpParameters.Builder builder = HttpParameters.newBuilder();
         builder.requestURL(csburl) // 设置请求的URL

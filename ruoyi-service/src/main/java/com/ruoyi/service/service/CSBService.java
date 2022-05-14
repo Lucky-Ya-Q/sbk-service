@@ -8,4 +8,6 @@ public interface CSBService {
     JSONObject qrcode_channel_encrypt(String systemName);
 
     JSONObject qrcode_channel_query_encrypt(String qrCode);
+
+    JSONObject qrcode_valid_encrypt(String qrCode, String busiType, String systemName);
 }
