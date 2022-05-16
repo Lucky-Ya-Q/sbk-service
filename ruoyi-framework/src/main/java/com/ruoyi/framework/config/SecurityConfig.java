@@ -129,6 +129,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 2.对于获取token的rest api要允许匿名访问
         web.ignoring().antMatchers(
                 "/api/test/**",
+                "/api/cbs/**",
                 "/api/sbk/base/**",
                 "/api/sbk/life/**" //匿名访问接口
         );
