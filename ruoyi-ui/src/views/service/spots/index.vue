@@ -70,6 +70,7 @@
         </template>
       </el-table-column>
       <el-table-column label="标题" align="center" prop="title" />
+      <el-table-column label="路由地址" align="center" prop="path" />
       <el-table-column label="地址" align="center" prop="address" />
       <el-table-column label="服务热线" align="center" prop="phone" />
       <el-table-column label="备注" align="center" prop="remark" />
@@ -92,7 +93,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -109,6 +110,9 @@
         </el-form-item>
         <el-form-item label="标题" prop="title">
           <el-input v-model="form.title" placeholder="请输入标题" />
+        </el-form-item>
+        <el-form-item label="路由地址" prop="path">
+          <el-input v-model="form.path" placeholder="请输入路由地址" />
         </el-form-item>
         <el-form-item label="地址" prop="address">
           <el-input v-model="form.address" placeholder="请输入地址" />
@@ -217,6 +221,7 @@ export default {
         spotsId: null,
         photoAlbum: null,
         title: null,
+        path: null,
         address: null,
         longitude: null,
         latitude: null,
