@@ -66,7 +66,12 @@ public class LogAspect
         try
         {
             // 获取当前的用户
-            LoginUser loginUser = SecurityUtils.getLoginUser();
+            LoginUser loginUser = null;
+            try {
+                loginUser = SecurityUtils.getLoginUser();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
 
             // *========数据库日志=========*//
             SysOperLog operLog = new SysOperLog();
@@ -78,6 +83,9 @@ public class LogAspect
             if (loginUser != null)
             {
                 operLog.setOperName(loginUser.getUsername());
+            } else {
+                // TODO: 2022/5/17 0017 区分接口调用人
+
             }
 
             if (e != null)
