@@ -70,7 +70,7 @@ public class LogAspect
             try {
                 loginUser = SecurityUtils.getLoginUser();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                log.info(ex.getMessage());
             }
 
             // *========数据库日志=========*//

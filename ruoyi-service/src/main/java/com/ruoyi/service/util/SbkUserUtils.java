@@ -1,6 +1,7 @@
 package com.ruoyi.service.util;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.exception.ServiceException;
@@ -15,11 +16,12 @@ import java.io.IOException;
 import java.util.Map;
 
 public class SbkUserUtils {
-    public static SbkUser getSbkUser(HttpServletRequest request){
+    public static SbkUser getSbkUser(HttpServletRequest request) {
         CSBService csbService = SpringUtil.getBean(CSBService.class);
         SbkService sbkService = SpringUtil.getBean(SbkService.class);
 
-        String security = request.getParameter("security");
+        String security = URLUtil.decode(request.getParameter("security"));
+
         if (StrUtil.isEmpty(security)) {
             throw new ServiceException("security参数不能为空");
         }
@@ -45,12 +47,6 @@ public class SbkUserUtils {
 
         String[] dzsbkjbxxArr = dzsbkjbxx.split("\\|");
 
-        return new SbkUser()
-                .setAab301(dzsbkjbxxArr[0])
-                .setAaz500(dzsbkjbxxArr[1])
-                .setAaz501(dzsbkjbxxArr[2])
-                .setAac002(dzsbkjbxxArr[3])
-                .setAac003(dzsbkjbxxArr[4])
-                .setAaz502(dzsbkjbxxArr[5]);
+        return new SbkUser().setAab301(dzsbkjbxxArr[0]).setAaz500(dzsbkjbxxArr[1]).setAaz501(dzsbkjbxxArr[2]).setAac002(dzsbkjbxxArr[3]).setAac003(dzsbkjbxxArr[4]).setAaz502(dzsbkjbxxArr[5]);
     }
 }
