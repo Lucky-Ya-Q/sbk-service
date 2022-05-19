@@ -134,7 +134,7 @@ public class CSBServiceImpl implements CSBService {
             } else if (retJson.getString("msgCode").startsWith("5")) {
                 throw new ServiceException(retJson.getString("message"));
             } else {
-                throw new ServiceException(retJson.getString("msg"), retJson.getInteger("msgCode"));
+                throw new ServiceException(retJson.getString("msg"));
             }
         } catch (HttpCallerException e) {
             log.error(e.getMessage());
