@@ -27,7 +27,7 @@ public class SbkUserUtils {
         try {
             signNo = JSON.parseObject(AESUtils.decrypt(security, "6vffkptbol2tf7bk")).getString("signNo");
         } catch (Exception e) {
-            throw new ServiceException("获取签发号错误");
+            throw new ServiceException("获取签发号失败");
         }
         String esscNo = csbService.auth_encrypt(signNo).getString("esscNo");
         // 电子社保卡基本信息
