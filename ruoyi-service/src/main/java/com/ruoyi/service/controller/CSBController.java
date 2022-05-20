@@ -1,5 +1,6 @@
 package com.ruoyi.service.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -8,6 +9,7 @@ import com.ruoyi.service.domain.SbkUser;
 import com.ruoyi.service.dto.Result;
 import com.ruoyi.service.service.CSBService;
 import com.ruoyi.service.service.SbkService;
+import com.ruoyi.service.util.AESUtils;
 import com.ruoyi.service.util.SbkParamUtils;
 import com.ruoyi.service.util.SbkUserUtils;
 import com.tecsun.sm.utils.ParamUtils;
@@ -38,7 +40,6 @@ public class CSBController {
      * 电子社保卡认证接口
      */
     @ApiOperation("电子社保卡认证接口")
-    @Log(title = "电子社保卡认证接口", businessType = BusinessType.OTHER)
     @GetMapping("/auth_encrypt")
     public AjaxResult auth_encrypt() throws IOException {
         SbkUser sbkUser = SbkUserUtils.getSbkUser(request);
@@ -56,7 +57,8 @@ public class CSBController {
         result.put("aac002", jbxxcxArr[1]);
         result.put("aac003", jbxxcxArr[0]);
         result.put("phone", jbxxcxArr[12]);
-        return AjaxResult.success(result);
+        String encrypt = AESUtils.encrypt(JSON.toJSONString(result), AESUtils.KEY);
+        return AjaxResult.success(encrypt);
     }
 
     /**
@@ -77,9 +79,10 @@ public class CSBController {
         String jbxxcx = ParamUtils.decrypted(SbkParamUtils.PRIVATEKEY, data.get("ReturnResult"));
         String[] jbxxcxArr = jbxxcx.split("\\|");
         Map<String, Object> result = new HashMap<>();
-        result.put("aac002", jbxxcxArr[1]);
+        result.put("aac002", "aac002");
         result.put("aac003", jbxxcxArr[0]);
         result.put("phone", jbxxcxArr[12]);
-        return AjaxResult.success(result);
+        String encrypt = AESUtils.encrypt(JSON.toJSONString(result), AESUtils.KEY);
+        return AjaxResult.success(encrypt);
     }
 }
