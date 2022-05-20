@@ -58,7 +58,7 @@ public class CSBController {
         result.put("aac003", jbxxcxArr[0]);
         result.put("phone", jbxxcxArr[12]);
         String encrypt = AESUtils.encrypt(JSON.toJSONString(result), AESUtils.KEY);
-        return AjaxResult.success(encrypt);
+        return AjaxResult.success("操作成功", encrypt);
     }
 
     /**
@@ -83,6 +83,6 @@ public class CSBController {
         result.put("aac003", jbxxcxArr[0]);
         result.put("phone", jbxxcxArr[12]);
         String encrypt = AESUtils.encrypt(JSON.toJSONString(result), AESUtils.KEY);
-        return AjaxResult.success(encrypt);
+        return AjaxResult.success("操作成功", encrypt);
     }
 }
