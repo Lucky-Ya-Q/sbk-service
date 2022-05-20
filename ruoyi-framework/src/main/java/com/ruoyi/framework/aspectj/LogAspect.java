@@ -4,6 +4,9 @@ import java.util.Collection;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import cn.hutool.core.util.StrUtil;
+import com.ruoyi.common.exception.ServiceException;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -63,54 +66,58 @@ public class LogAspect
 
     protected void handleLog(final JoinPoint joinPoint, Log controllerLog, final Exception e, Object jsonResult)
     {
-        try
-        {
-            // 获取当前的用户
-            LoginUser loginUser = null;
-            try {
-                loginUser = SecurityUtils.getLoginUser();
-            } catch (Exception ex) {
-                log.info(ex.getMessage());
-            }
 
-            // *========数据库日志=========*//
-            SysOperLog operLog = new SysOperLog();
-            operLog.setStatus(BusinessStatus.SUCCESS.ordinal());
-            // 请求的地址
-            String ip = IpUtils.getIpAddr(ServletUtils.getRequest());
-            operLog.setOperIp(ip);
-            operLog.setOperUrl(ServletUtils.getRequest().getRequestURI());
-            if (loginUser != null)
-            {
-                operLog.setOperName(loginUser.getUsername());
+        // 获取当前的用户
+        LoginUser loginUser = null;
+        try {
+            loginUser = SecurityUtils.getLoginUser();
+        } catch (Exception ex) {
+            log.info(ex.getMessage());
+        }
+
+        // *========数据库日志=========*//
+        SysOperLog operLog = new SysOperLog();
+        operLog.setStatus(BusinessStatus.SUCCESS.ordinal());
+        // 请求的地址
+        String ip = IpUtils.getIpAddr(ServletUtils.getRequest());
+        operLog.setOperIp(ip);
+        operLog.setOperUrl(ServletUtils.getRequest().getRequestURI());
+
+        if (e != null)
+        {
+            operLog.setStatus(BusinessStatus.FAIL.ordinal());
+            operLog.setErrorMsg(StringUtils.substring(e.getMessage(), 0, 2000));
+        }
+        // 设置方法名称
+        String className = joinPoint.getTarget().getClass().getName();
+        String methodName = joinPoint.getSignature().getName();
+        operLog.setMethod(className + "." + methodName + "()");
+        // 设置请求方式
+        operLog.setRequestMethod(ServletUtils.getRequest().getMethod());
+        // 处理设置注解上的参数
+        getControllerMethodDescription(joinPoint, controllerLog, operLog, jsonResult);
+        if (loginUser != null)
+        {
+            operLog.setOperName(loginUser.getUsername());
+        } else {
+            String code = ServletUtils.getRequest().getParameter("code");
+            if (StrUtil.isEmpty(code)){
+                // 保存数据库
+                operLog.setErrorMsg("授权码不能为空");
+                AsyncManager.me().execute(AsyncFactory.recordOper(operLog));
+                throw new ServiceException("授权码不能为空");
+            }
+            if (code.equals("f54791a523474e12b7c183f17c3cbcc2")){
+                operLog.setOperName("xibaipo");
             } else {
-                // TODO: 2022/5/17 0017 区分接口调用人
-
+                // 保存数据库
+                operLog.setErrorMsg("授权码错误");
+                AsyncManager.me().execute(AsyncFactory.recordOper(operLog));
+                throw new ServiceException("授权码错误");
             }
-
-            if (e != null)
-            {
-                operLog.setStatus(BusinessStatus.FAIL.ordinal());
-                operLog.setErrorMsg(StringUtils.substring(e.getMessage(), 0, 2000));
-            }
-            // 设置方法名称
-            String className = joinPoint.getTarget().getClass().getName();
-            String methodName = joinPoint.getSignature().getName();
-            operLog.setMethod(className + "." + methodName + "()");
-            // 设置请求方式
-            operLog.setRequestMethod(ServletUtils.getRequest().getMethod());
-            // 处理设置注解上的参数
-            getControllerMethodDescription(joinPoint, controllerLog, operLog, jsonResult);
-            // 保存数据库
-            AsyncManager.me().execute(AsyncFactory.recordOper(operLog));
         }
-        catch (Exception exp)
-        {
-            // 记录本地异常日志
-            log.error("==前置通知异常==");
-            log.error("异常信息:{}", exp.getMessage());
-            exp.printStackTrace();
-        }
+        // 保存数据库
+        AsyncManager.me().execute(AsyncFactory.recordOper(operLog));
     }
 
     /**
@@ -118,9 +125,8 @@ public class LogAspect
      * 
      * @param log 日志
      * @param operLog 操作日志
-     * @throws Exception
      */
-    public void getControllerMethodDescription(JoinPoint joinPoint, Log log, SysOperLog operLog, Object jsonResult) throws Exception
+    public void getControllerMethodDescription(JoinPoint joinPoint, Log log, SysOperLog operLog, Object jsonResult)
     {
         // 设置action动作
         operLog.setBusinessType(log.businessType().ordinal());
@@ -145,9 +151,8 @@ public class LogAspect
      * 获取请求的参数，放到log中
      * 
      * @param operLog 操作日志
-     * @throws Exception 异常
      */
-    private void setRequestValue(JoinPoint joinPoint, SysOperLog operLog) throws Exception
+    private void setRequestValue(JoinPoint joinPoint, SysOperLog operLog)
     {
         String requestMethod = operLog.getRequestMethod();
         if (HttpMethod.PUT.name().equals(requestMethod) || HttpMethod.POST.name().equals(requestMethod))
