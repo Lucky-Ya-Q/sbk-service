@@ -20,7 +20,7 @@ public class SbkUserUtils {
         CSBService csbService = SpringUtil.getBean(CSBService.class);
         SbkService sbkService = SpringUtil.getBean(SbkService.class);
 
-        String security = URLUtil.decode(request.getParameter("security"));
+        String security = request.getParameter("security");
 
         if (StrUtil.isEmpty(security)) {
             throw new ServiceException("security参数不能为空");
