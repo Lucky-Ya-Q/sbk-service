@@ -58,6 +58,11 @@ public class CSBController {
         result.put("aac003", jbxxcxArr[0]);
         result.put("phone", jbxxcxArr[12]);
         String encrypt = AESUtils.encrypt(JSON.toJSONString(result), AESUtils.KEY);
+//        Map<String, Object> result = new HashMap<>();
+//        result.put("aac002", "1301252000******13");
+//        result.put("aac003", "刘**");
+//        result.put("phone", "181****7340");
+//        String encrypt = AESUtils.encrypt(JSON.toJSONString(result), AESUtils.KEY);
         return AjaxResult.success("操作成功", encrypt);
     }
 
@@ -79,10 +84,15 @@ public class CSBController {
         String jbxxcx = ParamUtils.decrypted(SbkParamUtils.PRIVATEKEY, data.get("ReturnResult"));
         String[] jbxxcxArr = jbxxcx.split("\\|");
         Map<String, Object> result = new HashMap<>();
-        result.put("aac002", "aac002");
+        result.put("aac002", jbxxcxArr[1]);
         result.put("aac003", jbxxcxArr[0]);
         result.put("phone", jbxxcxArr[12]);
         String encrypt = AESUtils.encrypt(JSON.toJSONString(result), AESUtils.KEY);
+//        Map<String, Object> result = new HashMap<>();
+//        result.put("aac002", "1301252000******13");
+//        result.put("aac003", "刘**");
+//        result.put("phone", "181****7340");
+//        String encrypt = AESUtils.encrypt(JSON.toJSONString(result), AESUtils.KEY);
         return AjaxResult.success("操作成功", encrypt);
     }
 }

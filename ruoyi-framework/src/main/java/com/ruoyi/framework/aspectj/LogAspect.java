@@ -103,7 +103,9 @@ public class LogAspect
             String code = ServletUtils.getRequest().getParameter("code");
             if (StrUtil.isEmpty(code)){
                 // 保存数据库
+                operLog.setStatus(BusinessStatus.FAIL.ordinal());
                 operLog.setErrorMsg("授权码不能为空");
+                operLog.setJsonResult("");
                 AsyncManager.me().execute(AsyncFactory.recordOper(operLog));
                 throw new ServiceException("授权码不能为空");
             }
@@ -111,7 +113,9 @@ public class LogAspect
                 operLog.setOperName("xibaipo");
             } else {
                 // 保存数据库
+                operLog.setStatus(BusinessStatus.FAIL.ordinal());
                 operLog.setErrorMsg("授权码错误");
+                operLog.setJsonResult("");
                 AsyncManager.me().execute(AsyncFactory.recordOper(operLog));
                 throw new ServiceException("授权码错误");
             }
