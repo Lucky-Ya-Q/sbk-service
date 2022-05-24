@@ -81,7 +81,7 @@ public class LogAspect
         // 请求的地址
         String ip = IpUtils.getIpAddr(ServletUtils.getRequest());
         operLog.setOperIp(ip);
-        operLog.setOperUrl(ServletUtils.getRequest().getRequestURI());
+        operLog.setOperUrl(ServletUtils.getRequest().getRequestURI() + "?" + ServletUtils.getRequest().getQueryString());
 
         if (e != null)
         {
