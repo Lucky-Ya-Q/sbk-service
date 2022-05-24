@@ -30,10 +30,10 @@ public class CSBServiceImpl implements CSBService {
 //    private final String encryptKey = "bko8fnu2570b6qpy";
 
     // 内网-生产环境
-     private final String csburl = "http://10.1.189.189:8086/CSB/";
-     private final String accessKey = "4b148746a54c47dcaa6b7f5c12a787c8";
-     private final String securityKey = "ne/RsEpRJRvmcySH5CGiNXfVauM=";
-     private final String encryptKey = "bko8fnu2570b6qpy";
+    private final String csburl = "http://10.1.189.189:8086/CSB/";
+    private final String accessKey = "4b148746a54c47dcaa6b7f5c12a787c8";
+    private final String securityKey = "ne/RsEpRJRvmcySH5CGiNXfVauM=";
+    private final String encryptKey = "bko8fnu2570b6qpy";
 
     private final String api_version = "1.0.0";
     private final String api_method = "post";
