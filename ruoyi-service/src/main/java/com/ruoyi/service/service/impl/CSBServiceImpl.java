@@ -106,7 +106,6 @@ public class CSBServiceImpl implements CSBService {
         // 设置请求参数（json格式)
         param.put("channelNo", channelNo);
         param.put("accessNo", accessNo);
-        AESUtils.encrypt(JSON.toJSONString(param), encryptKey);
         Map<String, String> encryptParam = new HashMap<>();
         encryptParam.put("security", AESUtils.encrypt(JSON.toJSONString(param), encryptKey));
 
