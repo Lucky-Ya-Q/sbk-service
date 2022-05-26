@@ -133,6 +133,15 @@ public class SbkBaseController {
     }
 
     /**
+     * 制卡进度查询
+     */
+    @ApiOperation("制卡进度查询")
+    @PostMapping("/zkjdcx")
+    public AjaxResult zkjdcx() {
+        return AjaxResult.success();
+    }
+
+    /**
      * 公积金查询
      */
     @ApiOperation("公积金查询")
