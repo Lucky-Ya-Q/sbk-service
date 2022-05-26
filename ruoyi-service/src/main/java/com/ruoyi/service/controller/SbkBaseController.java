@@ -12,6 +12,8 @@ import com.ruoyi.service.dto.Result;
 import com.ruoyi.service.dto.RyjcxxbgParam;
 import com.ruoyi.service.service.CSBService;
 import com.ruoyi.service.service.SbkService;
+import com.ruoyi.service.service.WxArchivesService;
+import com.ruoyi.service.service.WxBukaInfoService;
 import com.ruoyi.service.util.HttpUtils;
 import com.ruoyi.service.util.SbkParamUtils;
 import com.ruoyi.service.util.SbkUserUtils;
@@ -46,6 +48,11 @@ public class SbkBaseController {
     private RestTemplate restTemplate;
     @Autowired
     private RedisCache redisCache;
+    @Autowired
+    private WxArchivesService wxArchivesService;
+    @Autowired
+    private WxBukaInfoService wxBukaInfoService;
+
 
     /**
      * 人员基础信息变更
