@@ -1,6 +1,7 @@
 package com.ruoyi.service.controller;
 
 import cn.hutool.core.codec.Base64;
+import cn.hutool.core.util.IdcardUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -161,13 +162,11 @@ public class SbkBaseController {
      */
     @ApiOperation("物流信息查询")
     @GetMapping("/wlxxcx")
-    public AjaxResult wlxxcx(@Validated ZkjdcxParam zkjdcxParam) {
-        // 社保卡基本信息查询
-//        Result result = sbkService.getResult("0811014", zkjdcxParam.getSfzh() + "|" + zkjdcxParam.getXm() + "|");
-//        if (!"200".equals(result.getStatusCode())) {
-//            return AjaxResult.error(result.getMessage());
-//        }
-        return AjaxResult.success(wxSmspersonEmsService.selectMailInfoBySfzh(zkjdcxParam.getSfzh()));
+    public AjaxResult wlxxcx(String sfzh) {
+        if (!IdcardUtil.isValidCard(sfzh)) {
+            return AjaxResult.error("身份证号码格式错误");
+        }
+        return AjaxResult.success(wxSmspersonEmsService.selectMailInfoBySfzh(sfzh));
     }
 
     /**
