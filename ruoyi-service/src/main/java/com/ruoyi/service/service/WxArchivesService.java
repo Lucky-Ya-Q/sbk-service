@@ -1,4 +1,7 @@
 package com.ruoyi.service.service;
 
-public interface WxArchivesService {
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.ruoyi.service.domain.WxArchives;
+
+public interface WxArchivesService extends IService<WxArchives> {
 }

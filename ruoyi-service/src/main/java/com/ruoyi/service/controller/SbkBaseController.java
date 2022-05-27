@@ -2,8 +2,6 @@ package com.ruoyi.service.controller;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.SecureUtil;
-import cn.hutool.crypto.symmetric.AES;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -12,9 +10,11 @@ import com.ruoyi.service.domain.SbkUser;
 import com.ruoyi.service.dto.FwmmxgParam;
 import com.ruoyi.service.dto.Result;
 import com.ruoyi.service.dto.RyjcxxbgParam;
+import com.ruoyi.service.dto.ZkjdcxParam;
 import com.ruoyi.service.service.SbkService;
 import com.ruoyi.service.service.WxArchivesService;
 import com.ruoyi.service.service.WxBukaInfoService;
+import com.ruoyi.service.service.WxSmspersonEmsService;
 import com.ruoyi.service.util.HttpUtils;
 import com.ruoyi.service.util.SbkParamUtils;
 import com.ruoyi.service.util.SbkUserUtils;
@@ -53,6 +53,8 @@ public class SbkBaseController {
     private WxArchivesService wxArchivesService;
     @Autowired
     private WxBukaInfoService wxBukaInfoService;
+    @Autowired
+    private WxSmspersonEmsService wxSmspersonEmsService;
 
 
     /**
@@ -145,7 +147,12 @@ public class SbkBaseController {
      */
     @ApiOperation("制卡进度查询")
     @GetMapping("/zkjdcx")
-    public AjaxResult zkjdcx() {
+    public AjaxResult zkjdcx(@Validated ZkjdcxParam zkjdcxParam) {
+        // 社保卡基本信息查询
+//        Result result = sbkService.getResult("0811014", zkjdcxParam.getSfzh() + "|" + zkjdcxParam.getXm() + "|");
+//        if (!"200".equals(result.getStatusCode())) {
+//            return AjaxResult.error(result.getMessage());
+//        }
         return AjaxResult.success();
     }
 
@@ -154,20 +161,13 @@ public class SbkBaseController {
      */
     @ApiOperation("物流信息查询")
     @GetMapping("/wlxxcx")
-    public AjaxResult wlxxcx(String mailNum) {
-        AES aes = SecureUtil.aes("94DA411B9C39B410".getBytes());
-        String url = "http://ipps.hbwkd.cn/ipps/orderPay/api/EmsTrail/EmsTrailAction.do?actionType=getMailInfo";
-        Map<String, Object> hashMap = new HashMap<>();
-        hashMap.put("AUTH_CODE", "94D5C8EAA808A9A5E050007F01005B3C");
-        hashMap.put("CUST_APPID", "wxde85bc4bf1f7629a");
-        hashMap.put("MAIL_NUM", mailNum);
-        String content = aes.encryptBase64(JSON.toJSONString(hashMap));
-        String result = restTemplate.postForObject(url, content, String.class);
-        if (result == null) {
-            return AjaxResult.error("没有查到物流信息");
-        }
-        result = aes.decryptStr(result.replaceAll("\\r\\n", ""));
-        return AjaxResult.success(JSON.parseObject(result));
+    public AjaxResult wlxxcx(@Validated ZkjdcxParam zkjdcxParam) {
+        // 社保卡基本信息查询
+//        Result result = sbkService.getResult("0811014", zkjdcxParam.getSfzh() + "|" + zkjdcxParam.getXm() + "|");
+//        if (!"200".equals(result.getStatusCode())) {
+//            return AjaxResult.error(result.getMessage());
+//        }
+        return AjaxResult.success(wxSmspersonEmsService.selectMailInfoBySfzh(zkjdcxParam.getSfzh()));
     }
 
     /**
