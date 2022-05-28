@@ -1,5 +1,6 @@
 package com.ruoyi.service.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.util.Date;
@@ -142,11 +143,6 @@ public class WxArchives {
     private String unitcode;
 
     /**
-     *
-     */
-    private String unitcodeDs;
-
-    /**
      * 单位
      */
     private String company;
@@ -160,26 +156,6 @@ public class WxArchives {
      *
      */
     private Date addTime;
-
-    /**
-     * 是否导出信息 0 代表否 ，1代表是
-     */
-    private String isDownInfo;
-
-    /**
-     * 是否导出照片 0 代表否 ，1代表是
-     */
-    private String isDownImg;
-
-    /**
-     *
-     */
-    private String isJpg;
-
-    /**
-     *
-     */
-    private Date jpgAddTime;
 
     /**
      * zhifu:打赏; haopin:好评
@@ -204,17 +180,28 @@ public class WxArchives {
     /**
      *
      */
-    private String bank;
-
-    /**
-     *
-     */
+    @TableField("formID")
     private String formID;
 
     /**
-     *
+     * 链接来源
      */
-    private String lingka;
+    private String urlSource;
+
+    /**
+     * 1已经领卡 0未领卡
+     */
+    private Integer lingka;
+
+    /**
+     * 支付宝采集
+     */
+    private String aliUserid;
+
+    /**
+     * 领卡网点
+     */
+    private String lingkaNet;
 
     /**
      * 订单号
@@ -240,51 +227,6 @@ public class WxArchives {
      * 区县编码
      */
     private String countyCode;
-
-    /**
-     * 合并订单号
-     */
-    private String combinedOrderno;
-
-    /**
-     * 0未合并  1已合并
-     */
-    private Integer combinedFlag;
-
-    /**
-     * 申请退费原因
-     */
-    private String returnReason;
-
-    /**
-     * 申请退费时间
-     */
-    private Date returnTime;
-
-    /**
-     * 0未申请  1已申请
-     */
-    private Integer returnFlag;
-
-    /**
-     * 0未审核  1已通过 2已驳回
-     */
-    private Integer examineReturnFlag;
-
-    /**
-     * 审核退费时间
-     */
-    private Date examineReturnTime;
-
-    /**
-     * 驳回申请退费原因
-     */
-    private String examineReturnReason;
-
-    /**
-     * 退费申请操作员
-     */
-    private Integer examineReturnCid;
 
     /**
      * 户口性质编号
@@ -360,5 +302,15 @@ public class WxArchives {
      * 银行ID
      */
     private Integer bankid;
+
+    /**
+     * 社保卡/银行网点编码
+     */
+    private String networkcode;
+
+    /**
+     * 工行e钱包绑定卡号
+     */
+    private String icbcBindMedium;
 }
 
