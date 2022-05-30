@@ -1,8 +1,7 @@
 package com.ruoyi.service.domain;
 
-import lombok.Data;
-
 import java.util.Date;
+import lombok.Data;
 
 @Data
 public class WxBukaInfo {
@@ -49,7 +48,7 @@ public class WxBukaInfo {
     /**
      * 卡信息 民族
      */
-    private Integer kaNation;
+    private String kaNation;
 
     /**
      * 卡信息 银行
@@ -69,7 +68,7 @@ public class WxBukaInfo {
     /**
      * 修改 民族
      */
-    private Integer newNation;
+    private String newNation;
 
     /**
      * 修改 银行
@@ -262,24 +261,29 @@ public class WxBukaInfo {
     private String lat;
 
     /**
-     *
+     * 开具发票
      */
-    private String isTicket;
+    private Integer isTicket;
 
     /**
-     *
+     * 邮寄单号
      */
     private String mailnum;
 
     /**
-     *
+     * 邮寄签收时间
      */
     private Date postTime;
 
     /**
-     *
+     * 1微信公众号 5电子社保卡
      */
-    private String returnReason;
+    private Integer websource;
+
+    /**
+     * 1无需支付
+     */
+    private Integer nopayflag;
 
     /**
      * 区县编码
@@ -290,11 +294,6 @@ public class WxBukaInfo {
      * 邮寄类型 0 到付 1线上付
      */
     private Integer mailtype;
-
-    /**
-     * 提交撤销补卡时间
-     */
-    private Date returnAddtime;
 
     /**
      * 职业编号
@@ -335,5 +334,10 @@ public class WxBukaInfo {
      * 代办人身份证号
      */
     private String daiIdcardno;
+
+    /**
+     * 1外地市 0石家庄本地或省直
+     */
+    private Integer othercityflag;
 }
 
