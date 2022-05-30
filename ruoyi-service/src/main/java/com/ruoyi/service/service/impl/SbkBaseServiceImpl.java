@@ -1,12 +1,16 @@
 package com.ruoyi.service.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ruoyi.service.domain.WxArchives;
 import com.ruoyi.service.domain.WxArchivesStatus;
 import com.ruoyi.service.domain.WxBukaInfo;
 import com.ruoyi.service.dto.ZkjdcxParam;
-import com.ruoyi.service.service.*;
+import com.ruoyi.service.service.SbkBaseService;
+import com.ruoyi.service.service.WxArchivesService;
+import com.ruoyi.service.service.WxArchivesStatusService;
+import com.ruoyi.service.service.WxBukaInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,15 +22,11 @@ import java.util.Map;
 @Service
 public class SbkBaseServiceImpl implements SbkBaseService {
     @Autowired
-    private SbkService sbkService;
-    @Autowired
     private WxArchivesService wxArchivesService;
     @Autowired
     private WxArchivesStatusService wxArchivesStatusService;
     @Autowired
     private WxBukaInfoService wxBukaInfoService;
-    @Autowired
-    private WxBukaInfoStatusService wxBukaInfoStatusService;
 
     @Override
     public Map<String, Object> getShenLingData(ZkjdcxParam zkjdcxParam, String state) {
@@ -171,7 +171,7 @@ public class SbkBaseServiceImpl implements SbkBaseService {
         if (wxArchivesStatus != null) {
             wxArchives = wxArchivesService.selectOneByLambdaQueryWrapper(new LambdaQueryWrapper<WxArchives>().eq(WxArchives::getCardNum, zkjdcxParam.getSfzh()));
 
-            shenlingMap.put("shijian", wxArchives.getAddTime());
+            shenlingMap.put("shijian", DateUtil.formatDateTime(wxArchives.getAddTime()));
             shenlingMap.put("qudao", wxArchives.getSource().equals("1") ? "微信公众号" : "12333网站");
 
             switch (wxArchivesStatus.getIsMail()) {
@@ -188,7 +188,7 @@ public class SbkBaseServiceImpl implements SbkBaseService {
 
             Map<String, Object> mapa = new HashMap<>();
             mapa.put("flag", 1);
-            mapa.put("add_time", wxArchivesStatus.getAddTime());
+            mapa.put("add_time", DateUtil.formatDateTime(wxArchivesStatus.getAddTime()));
             mapa.put("nickname", wxArchives.getName());
             mapa.put("is_mail", wxArchivesStatus.getIsMail());
 
@@ -202,13 +202,13 @@ public class SbkBaseServiceImpl implements SbkBaseService {
                 case "1":
                     mapb.put("flag", 1);
                     mapb.put("status", 1);
-                    mapb.put("examine_time", wxArchivesStatus.getExamineTime());
+                    mapb.put("examine_time", DateUtil.formatDateTime(wxArchivesStatus.getExamineTime()));
                     mapb.put("msg", "初审通过");
                     break;
                 case "2":
                     mapb.put("flag", 2);
                     mapb.put("status", 1);
-                    mapb.put("examine_time", wxArchivesStatus.getExamineTime());
+                    mapb.put("examine_time", DateUtil.formatDateTime(wxArchivesStatus.getExamineTime()));
                     mapb.put("msg", "初审驳回。驳回原因：" + wxArchivesStatus.getReason() + "。");
                     break;
             }
@@ -217,12 +217,12 @@ public class SbkBaseServiceImpl implements SbkBaseService {
             if (wxArchivesStatus.getIsJpg().equals("2")) {
                 mapc.put("flag", 1);
                 mapc.put("msg", "已导出");
-                mapc.put("daochu_time", wxArchivesStatus.getJpgAddTime());
+                mapc.put("daochu_time", DateUtil.formatDateTime(wxArchivesStatus.getJpgAddTime()));
             } else {
                 if (wxArchivesStatus.getIsMail().equals("网点领取“" + wxArchives.getLingkaNet() + "”") && wxArchivesStatus.getExamineStatus().equals("1")) {
                     mapc.put("flag", 1);
                     mapc.put("msg", "已导出");
-                    mapc.put("daochu_time", wxArchivesStatus.getJpgAddTime());
+                    mapc.put("daochu_time", DateUtil.formatDateTime(wxArchivesStatus.getJpgAddTime()));
                 } else {
                     mapc.put("flag", 0);
                     mapc.put("msg", "未导出");
@@ -265,7 +265,7 @@ public class SbkBaseServiceImpl implements SbkBaseService {
         for (WxBukaInfo wxBukaInfo : wxBukaInfoList) {
             // buhuanka
             Map<String, Object> buhuankaMap = new HashMap<>();
-            buhuankaMap.put("shijian", wxBukaInfo.getAddTime());
+            buhuankaMap.put("shijian", DateUtil.formatDateTime(wxBukaInfo.getAddTime()));
             buhuankaMap.put("qudao", wxBukaInfo.getWebsource() == 1 ? "微信公众号" : "电子社保卡");
             // shenling.data 所有数据
             List<Map<String, Object>> resultList = new ArrayList<>();
@@ -274,7 +274,7 @@ public class SbkBaseServiceImpl implements SbkBaseService {
 
             Map<String, Object> mapa = new HashMap<>();
             mapa.put("flag", 1);
-            mapa.put("add_time", wxBukaInfo.getAddTime());
+            mapa.put("add_time", DateUtil.formatDateTime(wxBukaInfo.getAddTime()));
             mapa.put("nickname", wxBukaInfo.getKaName());
             mapa.put("is_mail", "邮寄到家");
 
@@ -288,13 +288,13 @@ public class SbkBaseServiceImpl implements SbkBaseService {
                 case 1:
                     mapb.put("flag", 1);
                     mapb.put("status", 1);
-                    mapb.put("examine_time", wxBukaInfo.getExamineTime());
+                    mapb.put("examine_time", DateUtil.formatDateTime(wxBukaInfo.getExamineTime()));
                     mapb.put("msg", "初审通过");
                     break;
                 case 2:
                     mapb.put("flag", 2);
                     mapb.put("status", 1);
-                    mapb.put("examine_time", wxBukaInfo.getExamineTime());
+                    mapb.put("examine_time", DateUtil.formatDateTime(wxBukaInfo.getExamineTime()));
                     mapb.put("msg", "初审驳回。驳回原因：" + wxBukaInfo.getRejectReason() + "。");
                     break;
             }
