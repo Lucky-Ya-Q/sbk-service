@@ -261,7 +261,7 @@ public class SbkBaseServiceImpl implements SbkBaseService {
     public List<Map<String, Object>> getBuHuanKaData(ZkjdcxParam zkjdcxParam, String state) {
         List<Map<String, Object>> buhuankaList = new ArrayList<>();
 
-        List<WxBukaInfo> wxBukaInfoList = wxBukaInfoService.selectListByLambdaQueryWrapper(new LambdaQueryWrapper<WxBukaInfo>().eq(WxBukaInfo::getIdcardno, zkjdcxParam.getSfzh()).eq(WxBukaInfo::getStepStatus, 9).in(WxBukaInfo::getExamineStatus, "0", "1", "2"));
+        List<WxBukaInfo> wxBukaInfoList = wxBukaInfoService.selectListByLambdaQueryWrapper(new LambdaQueryWrapper<WxBukaInfo>().eq(WxBukaInfo::getIdcardno, zkjdcxParam.getSfzh()).eq(WxBukaInfo::getStepStatus, 9).in(WxBukaInfo::getExamineStatus, "0", "1", "2").orderByDesc(WxBukaInfo::getId));
         for (WxBukaInfo wxBukaInfo : wxBukaInfoList) {
             // buhuanka
             Map<String, Object> buhuankaMap = new HashMap<>();
