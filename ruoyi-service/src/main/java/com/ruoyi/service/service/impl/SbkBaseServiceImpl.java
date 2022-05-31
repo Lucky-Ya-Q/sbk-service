@@ -408,19 +408,19 @@ public class SbkBaseServiceImpl implements SbkBaseService {
                     map4.put("flag", 1);
                 }
 
-                Map<String, Object> map5 = new HashMap<>();
-                map5.put("info", "个人已领取社保卡");
-                if (wxBukaInfo.getMailStatus() == 2 || wxBukaInfo.getMailStatus() == 3) {
-                    map5.put("flag", 1);
-                } else {
-                    map5.put("flag", 0);
-                }
+//                Map<String, Object> map5 = new HashMap<>();
+//                map5.put("info", "个人已领取社保卡");
+//                if (wxBukaInfo.getMailStatus() == 2 || wxBukaInfo.getMailStatus() == 3) {
+//                    map5.put("flag", 1);
+//                } else {
+//                    map5.put("flag", 0);
+//                }
 
                 map4.put("time_flag", 0);
-                map5.put("time_flag", 0);
+//                map5.put("time_flag", 0);
 
                 mapList.add(map4);
-                mapList.add(map5);
+//                mapList.add(map5);
 
                 resultList.addAll(mapList);
             }
