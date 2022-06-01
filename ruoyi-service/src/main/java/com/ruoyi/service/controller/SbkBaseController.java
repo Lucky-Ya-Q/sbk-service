@@ -145,16 +145,19 @@ public class SbkBaseController {
      */
     @ApiOperation("制卡进度查询")
     @GetMapping("/zkjdcx")
-    public AjaxResult zkjdcx(@Validated ZkjdcxParam zkjdcxParam) {
+    public AjaxResult zkjdcx(@Validated ZkjdcxParam zkjdcxParam) throws IOException {
         Map<String, Object> resultMap = new HashMap<>();
         // 申领信息查询
-//        Result result = sbkService.getResult("0811012", zkjdcxParam.getSfzh() + "|" + zkjdcxParam.getXm());
-//        if (!"200".equals(result.getStatusCode())) {
-//            return AjaxResult.error(result.getMessage());
-//        }
+        Result result = sbkService.getResult("0811012", zkjdcxParam.getSfzh() + "|" + zkjdcxParam.getXm());
+        if (!"200".equals(result.getStatusCode())) {
+            return AjaxResult.error(result.getMessage());
+        }
+        Map<String, String> data = (Map<String, String>) result.getData();
+        String slxxcx = ParamUtils.decrypted(SbkParamUtils.PRIVATEKEY, data.get("ReturnResult"));
+        String[] slxxcxArr = slxxcx.split("\\|");
 
-        resultMap.put("shenling", sbkBaseService.getShenLingData(zkjdcxParam, zkjdcxParam.getXm()));
-        resultMap.put("buhuanka", sbkBaseService.getBuHuanKaData(zkjdcxParam, zkjdcxParam.getXm()));
+        resultMap.put("shenling", sbkBaseService.getShenLingData(zkjdcxParam, slxxcxArr[12]));
+        resultMap.put("buhuanka", sbkBaseService.getBuHuanKaData(zkjdcxParam, slxxcxArr[12]));
         return AjaxResult.success(resultMap);
     }
 
