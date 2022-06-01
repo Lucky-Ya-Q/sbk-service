@@ -1,28 +1,34 @@
 package com.ruoyi.service.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.service.domain.SbkIndexMenu;
 import com.ruoyi.service.domain.SbkScenicSpots;
+import com.ruoyi.service.domain.SbkXbporder;
+import com.ruoyi.service.dto.AppointmentVO;
 import com.ruoyi.service.service.ISbkIndexMenuService;
 import com.ruoyi.service.service.ISbkScenicSpotsService;
+import com.ruoyi.service.service.ISbkXbporderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Api(tags = "社保卡民生服务")
 @RestController
 @RequestMapping("/api/sbk/life")
 public class SbkLifeController extends BaseController {
+    @Autowired
+    private ISbkXbporderService sbkXbporderService;
     @Autowired
     private ISbkIndexMenuService sbkIndexMenuService;
     @Autowired
@@ -52,5 +58,31 @@ public class SbkLifeController extends BaseController {
                 .eq(StrUtil.isNotEmpty(sbkScenicSpots.getTitle()), SbkScenicSpots::getTitle, sbkScenicSpots.getTitle());
         List<SbkScenicSpots> list = sbkScenicSpotsService.list(queryWrapper);
         return getDataTable(list);
+    }
+
+    /**
+     * 新增西柏坡订单
+     *
+     * @return
+     */
+    @ApiOperation("新增西柏坡订单")
+    @Log(title = "新增西柏坡订单", businessType = BusinessType.OTHER)
+    @PostMapping("/xbpOrder")
+    public AjaxResult xbpOrder(@RequestBody AppointmentVO appointmentVO) {
+        JSONObject decryptData = appointmentVO.getDecryptData();
+        List<JSONObject> touristInfos = appointmentVO.getTouristInfos();
+
+        SbkXbporder sbkXbporder = new SbkXbporder();
+        sbkXbporder.setName(decryptData.getString("name"));
+        sbkXbporder.setPhone(decryptData.getString("phone"));
+        sbkXbporder.setIdCard(decryptData.getString("idCard"));
+        sbkXbporder.setTouristInfos(JSON.toJSONString(touristInfos));
+        sbkXbporder.setAdmissionDate(appointmentVO.getAdmissionDate());
+        sbkXbporder.setAdmissionPeriod(appointmentVO.getAdmissionPeriod());
+        sbkXbporder.setTicketPrice(appointmentVO.getTicketPrice());
+        sbkXbporder.setTicketsPurchasedName(appointmentVO.getTicketsPurchasedName());
+        sbkXbporderService.save(sbkXbporder);
+
+        return AjaxResult.success();
     }
 }
