@@ -43,7 +43,8 @@ public class WxSmspersonEmsServiceImpl extends ServiceImpl<WxSmspersonEmsMapper,
     @DataSource(value = DataSourceType.SLAVE)
     public JSONObject selectMailInfoByWldh(String wldh) {
         AES aes = SecureUtil.aes("94DA411B9C39B410".getBytes());
-        String url = "http://ipps.hbwkd.cn/ipps/orderPay/api/EmsTrail/EmsTrailAction.do?actionType=getMailInfo";
+//        String url = "http://ipps.hbwkd.cn/ipps/orderPay/api/EmsTrail/EmsTrailAction.do?actionType=getMailInfo";
+        String url = "http://10.36.2.8:9007/emsipps/ipps/orderPay/api/EmsTrail/EmsTrailAction.do?actionType=getMailInfo";
         Map<String, Object> hashMap = new HashMap<>();
         hashMap.put("AUTH_CODE", "94D5C8EAA808A9A5E050007F01005B3C");
         hashMap.put("CUST_APPID", "wxde85bc4bf1f7629a");
@@ -65,7 +66,8 @@ public class WxSmspersonEmsServiceImpl extends ServiceImpl<WxSmspersonEmsMapper,
             throw new ServiceException("没有查到物流单号");
         }
         AES aes = SecureUtil.aes("94DA411B9C39B410".getBytes());
-        String url = "http://ipps.hbwkd.cn/ipps/orderPay/api/EmsTrail/EmsTrailAction.do?actionType=getMailInfo";
+//        String url = "http://ipps.hbwkd.cn/ipps/orderPay/api/EmsTrail/EmsTrailAction.do?actionType=getMailInfo";
+        String url = "http://10.36.2.8:9007/emsipps/ipps/orderPay/api/EmsTrail/EmsTrailAction.do?actionType=getMailInfo";
         Map<String, Object> hashMap = new HashMap<>();
         hashMap.put("AUTH_CODE", "94D5C8EAA808A9A5E050007F01005B3C");
         hashMap.put("CUST_APPID", "wxde85bc4bf1f7629a");
