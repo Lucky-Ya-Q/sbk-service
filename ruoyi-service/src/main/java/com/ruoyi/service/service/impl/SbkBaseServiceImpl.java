@@ -402,7 +402,7 @@ public class SbkBaseServiceImpl implements SbkBaseService {
                 Map<String, Object> map4 = new HashMap<>();
                 map4.put("info", "4、已邮寄");
                 map4.put("mailnum", wxBukaInfo.getMailnum());
-                if (StrUtil.isEmpty(wxBukaInfo.getMailnum())) {
+                if (wxBukaInfo.getMailnum().equals("0")) {
                     map4.put("flag", 0);
                 } else {
                     map4.put("flag", 1);
