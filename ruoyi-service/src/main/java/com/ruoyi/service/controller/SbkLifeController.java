@@ -55,7 +55,7 @@ public class SbkLifeController extends BaseController {
     public TableDataInfo spotsList(SbkScenicSpots sbkScenicSpots) {
         startPage();
         LambdaQueryWrapper<SbkScenicSpots> queryWrapper = new LambdaQueryWrapper<SbkScenicSpots>()
-                .eq(StrUtil.isNotEmpty(sbkScenicSpots.getTitle()), SbkScenicSpots::getTitle, sbkScenicSpots.getTitle());
+                .like(StrUtil.isNotEmpty(sbkScenicSpots.getTitle()), SbkScenicSpots::getTitle, sbkScenicSpots.getTitle());
         List<SbkScenicSpots> list = sbkScenicSpotsService.list(queryWrapper);
         return getDataTable(list);
     }
