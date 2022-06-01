@@ -114,6 +114,9 @@
         <el-form-item label="路由地址" prop="path">
           <el-input v-model="form.path" placeholder="请输入路由地址" />
         </el-form-item>
+        <el-form-item label="按钮组" prop="buttonGroup">
+          <el-input v-model="form.buttonGroup" type="textarea" placeholder="请输入按钮组" />
+        </el-form-item>
         <el-form-item label="地址" prop="address">
           <el-input v-model="form.address" placeholder="请输入地址" />
         </el-form-item>
@@ -222,6 +225,7 @@ export default {
         photoAlbum: null,
         title: null,
         path: null,
+        buttonGroup: null,
         address: null,
         longitude: null,
         latitude: null,
@@ -264,6 +268,7 @@ export default {
       const spotsId = row.spotsId || this.ids
       getSpots(spotsId).then(response => {
         this.form = response.data;
+        this.form.buttonGroup = JSON.stringify(JSON.parse(this.form.buttonGroup), null, 2)
         this.open = true;
         this.title = "修改旅游景点";
       });

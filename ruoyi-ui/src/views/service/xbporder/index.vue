@@ -112,7 +112,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -271,6 +271,7 @@ export default {
       const orderId = row.orderId || this.ids
       getXbporder(orderId).then(response => {
         this.form = response.data;
+        this.form.touristInfos = JSON.stringify(JSON.parse(this.form.touristInfos), null, 2)
         this.open = true;
         this.title = "修改西柏坡订单";
       });

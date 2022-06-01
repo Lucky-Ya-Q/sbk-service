@@ -36,6 +36,10 @@ public class SbkScenicSpots extends BaseEntity
     @Excel(name = "路由地址")
     private String path;
 
+    /** 按钮组 */
+    @Excel(name = "按钮组")
+    private String buttonGroup;
+
     /** 地址 */
     @Excel(name = "地址")
     private String address;
