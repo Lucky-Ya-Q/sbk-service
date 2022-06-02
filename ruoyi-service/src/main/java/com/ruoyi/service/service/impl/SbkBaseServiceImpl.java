@@ -336,7 +336,7 @@ public class SbkBaseServiceImpl implements SbkBaseService {
             resultList.add(mapc);
 
             if (mapc.get("flag").toString().equals("1")) {
-                String oldCardCode1 = "1、制卡信息采集已审核通过（审核通过后五个工作日完成制卡，请耐心等待）。";
+                String oldCardCode1 = "1、制卡信息采集已审核通过（工作日当天12点前审核通过下午寄出，12点后审核通过第二个工作日寄出）。";
                 String oldCardCode2 = "2、正在写入社保信息，请耐心等待";
                 String oldCardCode3 = "3、制卡成功，待邮寄";
                 switch (state) {
