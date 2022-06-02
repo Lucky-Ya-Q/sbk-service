@@ -1,16 +1,13 @@
 package com.ruoyi.service.service.impl;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ruoyi.service.domain.WxArchives;
 import com.ruoyi.service.domain.WxArchivesStatus;
 import com.ruoyi.service.domain.WxBukaInfo;
+import com.ruoyi.service.domain.WxSmspersonEms;
 import com.ruoyi.service.dto.ZkjdcxParam;
-import com.ruoyi.service.service.SbkBaseService;
-import com.ruoyi.service.service.WxArchivesService;
-import com.ruoyi.service.service.WxArchivesStatusService;
-import com.ruoyi.service.service.WxBukaInfoService;
+import com.ruoyi.service.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +24,8 @@ public class SbkBaseServiceImpl implements SbkBaseService {
     private WxArchivesStatusService wxArchivesStatusService;
     @Autowired
     private WxBukaInfoService wxBukaInfoService;
+    @Autowired
+    private WxSmspersonEmsService wxSmspersonEmsService;
 
     @Override
     public Map<String, Object> getShenLingData(ZkjdcxParam zkjdcxParam, String state) {
@@ -39,8 +38,8 @@ public class SbkBaseServiceImpl implements SbkBaseService {
 
         String newCardCode1 = "1、制卡信息采集已审核通过（工作日当天12点前审核通过下午寄出，12点后审核通过第二个工作日寄出）。";
         String newCardCode2 = "2、正在写入社保信息，请耐心等待";
-        String newCardCode3 = "3、制卡成功，卡中心分卡、验卡、入库";
-        String newCardCode4 = "4、等待县区网点或单位、社区领卡";
+        String newCardCode3 = "3、制卡成功，待邮寄";
+        String newCardCode4 = "4、已邮寄";
         switch (state) {
             case "32": {
                 Map<String, Object> map1 = new HashMap<>();
@@ -53,22 +52,22 @@ public class SbkBaseServiceImpl implements SbkBaseService {
                 map3.put("flag", 1);
                 map3.put("info", newCardCode3);
                 Map<String, Object> map4 = new HashMap<>();
-                map4.put("flag", 1);
+                map4.put("flag", 0);
                 map4.put("info", newCardCode4);
-                Map<String, Object> map5 = new HashMap<>();
-                map5.put("flag", 1);
-                map5.put("info", "5、个人已领取社保卡");
+//                Map<String, Object> map5 = new HashMap<>();
+//                map5.put("flag", 1);
+//                map5.put("info", "5、个人已领取社保卡");
 
                 map1.put("time_flag", 0);
                 map2.put("time_flag", 0);
                 map3.put("time_flag", 0);
                 map4.put("time_flag", 0);
-                map5.put("time_flag", 0);
+//                map5.put("time_flag", 0);
                 mapList.add(map1);
                 mapList.add(map2);
                 mapList.add(map3);
                 mapList.add(map4);
-                mapList.add(map5);
+//                mapList.add(map5);
                 break;
             }
             case "33": {
@@ -82,22 +81,22 @@ public class SbkBaseServiceImpl implements SbkBaseService {
                 map3.put("flag", 1);
                 map3.put("info", newCardCode3);
                 Map<String, Object> map4 = new HashMap<>();
-                map4.put("flag", 1);
+                map4.put("flag", 0);
                 map4.put("info", newCardCode4);
-                Map<String, Object> map5 = new HashMap<>();
-                map5.put("flag", 1);
-                map5.put("info", "5、单位已领取社保卡");
+//                Map<String, Object> map5 = new HashMap<>();
+//                map5.put("flag", 1);
+//                map5.put("info", "5、单位已领取社保卡");
 
                 map1.put("time_flag", 0);
                 map2.put("time_flag", 0);
                 map3.put("time_flag", 0);
                 map4.put("time_flag", 0);
-                map5.put("time_flag", 0);
+//                map5.put("time_flag", 0);
                 mapList.add(map1);
                 mapList.add(map2);
                 mapList.add(map3);
                 mapList.add(map4);
-                mapList.add(map5);
+//                mapList.add(map5);
                 break;
             }
             case "11": {
@@ -113,20 +112,20 @@ public class SbkBaseServiceImpl implements SbkBaseService {
                 Map<String, Object> map4 = new HashMap<>();
                 map4.put("flag", 0);
                 map4.put("info", newCardCode4);
-                Map<String, Object> map5 = new HashMap<>();
-                map5.put("flag", 0);
-                map5.put("info", "5、单位或者个人已领取社保卡");
+//                Map<String, Object> map5 = new HashMap<>();
+//                map5.put("flag", 0);
+//                map5.put("info", "5、单位或者个人已领取社保卡");
 
                 map1.put("time_flag", 0);
                 map2.put("time_flag", 0);
                 map3.put("time_flag", 0);
                 map4.put("time_flag", 0);
-                map5.put("time_flag", 0);
+//                map5.put("time_flag", 0);
                 mapList.add(map1);
                 mapList.add(map2);
                 mapList.add(map3);
                 mapList.add(map4);
-                mapList.add(map5);
+//                mapList.add(map5);
                 break;
             }
             default: {
@@ -142,20 +141,20 @@ public class SbkBaseServiceImpl implements SbkBaseService {
                 Map<String, Object> map4 = new HashMap<>();
                 map4.put("flag", 0);
                 map4.put("info", newCardCode4);
-                Map<String, Object> map5 = new HashMap<>();
-                map5.put("flag", 0);
-                map5.put("info", "5、单位或者个人已领取社保卡");
+//                Map<String, Object> map5 = new HashMap<>();
+//                map5.put("flag", 0);
+//                map5.put("info", "5、单位或者个人已领取社保卡");
 
                 map1.put("time_flag", 0);
                 map2.put("time_flag", 0);
                 map3.put("time_flag", 0);
                 map4.put("time_flag", 0);
-                map5.put("time_flag", 0);
+//                map5.put("time_flag", 0);
                 mapList.add(map1);
                 mapList.add(map2);
                 mapList.add(map3);
                 mapList.add(map4);
-                mapList.add(map5);
+//                mapList.add(map5);
                 break;
             }
         }
@@ -163,7 +162,7 @@ public class SbkBaseServiceImpl implements SbkBaseService {
         WxArchives wxArchives = wxArchivesService.selectOneByLambdaQueryWrapper(new LambdaQueryWrapper<WxArchives>().eq(WxArchives::getCardNum, zkjdcxParam.getSfzh()).eq(WxArchives::getStepStatus, 9));
         if (wxArchives != null) {
             if (wxArchives.getIsMail().equals("1")) {
-                mapList.get(4).put("info", "5、个人邮寄领取社保卡");
+//                mapList.get(4).put("info", "5、个人邮寄领取社保卡");
             }
         }
 
@@ -177,12 +176,23 @@ public class SbkBaseServiceImpl implements SbkBaseService {
             switch (wxArchivesStatus.getIsMail()) {
                 case "1":
                     wxArchivesStatus.setIsMail("邮寄到家");
+//                    LambdaQueryWrapper<WxSmspersonEms> queryWrapper = new LambdaQueryWrapper<WxSmspersonEms>()
+//                            .like(WxSmspersonEms::getIdcard, wxArchives.getCardNum())
+//                            .ge(WxSmspersonEms::getImporttime, wxArchives.getExamineTime());
+//                    WxSmspersonEms wxSmspersonEms = wxSmspersonEmsService.selectOneByLambdaQueryWrapper(queryWrapper);
+//                    if (wxSmspersonEms == null) {
+//                        mapList.get(3).put("flag", 0);
+//                    } else {
+//                        mapList.get(3).put("flag", 1);
+//                    }
                     break;
                 case "0":
                     wxArchivesStatus.setIsMail("网点领取“" + wxArchives.getLingkaNet() + "”");
+                    mapList.remove(3);
                     break;
                 case "2":
                     wxArchivesStatus.setIsMail("银行网点领取“" + wxArchives.getLingkaNet() + "”");
+                    mapList.remove(3);
                     break;
             }
 
@@ -400,13 +410,18 @@ public class SbkBaseServiceImpl implements SbkBaseService {
                     }
                 }
                 Map<String, Object> map4 = new HashMap<>();
+//                LambdaQueryWrapper<WxSmspersonEms> queryWrapper = new LambdaQueryWrapper<WxSmspersonEms>()
+//                        .like(WxSmspersonEms::getIdcard, wxBukaInfo.getIdcardno())
+//                        .ge(WxSmspersonEms::getImporttime, wxBukaInfo.getExamineTime());
+//                WxSmspersonEms wxSmspersonEms = wxSmspersonEmsService.selectOneByLambdaQueryWrapper(queryWrapper);
+//                if (wxSmspersonEms == null) {
+//                    map4.put("flag", 0);
+//                } else {
+//                    map4.put("flag", 1);
+//                }
                 map4.put("info", "4、已邮寄");
-                map4.put("mailnum", wxBukaInfo.getMailnum());
-                if (wxBukaInfo.getMailnum().equals("0")) {
-                    map4.put("flag", 0);
-                } else {
-                    map4.put("flag", 1);
-                }
+//                map4.put("mailnum", wxSmspersonEms.getMailnum());
+
 
 //                Map<String, Object> map5 = new HashMap<>();
 //                map5.put("info", "个人已领取社保卡");
