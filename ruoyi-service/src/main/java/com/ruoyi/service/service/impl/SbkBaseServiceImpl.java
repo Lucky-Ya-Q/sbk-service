@@ -37,7 +37,7 @@ public class SbkBaseServiceImpl implements SbkBaseService {
         // shenling.data 德生数据
         List<Map<String, Object>> mapList = new ArrayList<>();
 
-        String newCardCode1 = "1、制卡信息采集已审核通过（审核通过后五个工作日完成制卡，请耐心等待）。";
+        String newCardCode1 = "1、制卡信息采集已审核通过（工作日当天12点前审核通过下午寄出，12点后审核通过第二个工作日寄出）。";
         String newCardCode2 = "2、正在写入社保信息，请耐心等待";
         String newCardCode3 = "3、制卡成功，卡中心分卡、验卡、入库";
         String newCardCode4 = "4、等待县区网点或单位、社区领卡";
