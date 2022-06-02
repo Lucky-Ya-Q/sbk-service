@@ -327,7 +327,7 @@ public class SbkBaseServiceImpl implements SbkBaseService {
                     source = "【灵寿】";
                     break;
             }
-            mapa.put("info", "A、" + source + "首次制卡信息提交成功");
+            mapa.put("info", "A、" + source + "补换卡信息提交成功");
             mapb.put("info", "B、" + source + "制卡信息网上初审");
             mapc.put("info", "C、" + source + "制卡信息导出到省级制卡平台");
 
