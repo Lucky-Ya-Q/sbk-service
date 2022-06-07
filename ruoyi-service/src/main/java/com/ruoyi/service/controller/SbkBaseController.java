@@ -158,14 +158,17 @@ public class SbkBaseController {
         // 申领信息查询
         Result result = sbkService.getResult("0811012", zkjdcxParam.getSfzh() + "|" + zkjdcxParam.getXm());
         if (!"200".equals(result.getStatusCode())) {
-            return AjaxResult.error(result.getMessage());
-        }
-        Map<String, String> data = (Map<String, String>) result.getData();
-        String slxxcx = ParamUtils.decrypted(SbkParamUtils.PRIVATEKEY, data.get("ReturnResult"));
-        String[] slxxcxArr = slxxcx.split("\\|");
+            resultMap.put("shenling", getShenLingData(zkjdcxParam, "100"));
+            resultMap.put("buhuanka", new ArrayList<>());
+        } else {
+            Map<String, String> data = (Map<String, String>) result.getData();
+            String slxxcx = ParamUtils.decrypted(SbkParamUtils.PRIVATEKEY, data.get("ReturnResult"));
+            String[] slxxcxArr = slxxcx.split("\\|");
 
-        resultMap.put("shenling", getShenLingData(zkjdcxParam, slxxcxArr[12]));
-        resultMap.put("buhuanka", getBuHuanKaData(zkjdcxParam, slxxcxArr[12]));
+            resultMap.put("shenling", getShenLingData(zkjdcxParam, slxxcxArr[12]));
+            resultMap.put("buhuanka", getBuHuanKaData(zkjdcxParam, slxxcxArr[12]));
+        }
+
         return AjaxResult.success(resultMap);
     }
 
