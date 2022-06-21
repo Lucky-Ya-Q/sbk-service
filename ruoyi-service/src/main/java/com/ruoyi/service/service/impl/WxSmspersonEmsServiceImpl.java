@@ -40,7 +40,6 @@ public class WxSmspersonEmsServiceImpl extends ServiceImpl<WxSmspersonEmsMapper,
     }
 
     @Override
-    @DataSource(value = DataSourceType.SLAVE)
     public JSONObject selectMailInfoByWldh(String wldh) {
         AES aes = SecureUtil.aes("94DA411B9C39B410".getBytes());
 //        String url = "http://ipps.hbwkd.cn/ipps/orderPay/api/EmsTrail/EmsTrailAction.do?actionType=getMailInfo";
