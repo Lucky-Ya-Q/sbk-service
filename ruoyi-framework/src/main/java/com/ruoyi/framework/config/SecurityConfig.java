@@ -131,6 +131,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/api/test/**",
                 "/api/cbs/**",
                 "/api/sbk/base/**",
+                "/life/library/**",
                 "/api/sbk/life/**" //匿名访问接口
         );
     }
