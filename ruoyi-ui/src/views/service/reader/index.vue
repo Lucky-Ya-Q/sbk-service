@@ -1,26 +1,18 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="姓名" prop="name">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
+      <el-form-item label="姓名" prop="rdname">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.rdname"
           placeholder="请输入姓名"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="手机号" prop="phone">
+      <el-form-item label="身份证号码" prop="rdcertify">
         <el-input
-          v-model="queryParams.phone"
-          placeholder="请输入手机号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="身份证号" prop="idCard">
-        <el-input
-          v-model="queryParams.idCard"
-          placeholder="请输入身份证号"
+          v-model="queryParams.rdcertify"
+          placeholder="请输入身份证号码"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -39,7 +31,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['service:xbporder:add']"
+          v-hasPermi="['service:reader:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -50,7 +42,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['service:xbporder:edit']"
+          v-hasPermi="['service:reader:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -61,7 +53,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['service:xbporder:remove']"
+          v-hasPermi="['service:reader:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -71,28 +63,39 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['service:xbporder:export']"
+          v-hasPermi="['service:reader:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="xbporderList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="readerList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="订单ID" align="center" prop="orderId" />
-      <el-table-column label="姓名" align="center" prop="name" />
-      <el-table-column label="手机号" align="center" prop="phone" />
-      <el-table-column label="身份证号" align="center" prop="idCard" />
-      <el-table-column label="游客信息" align="center" prop="touristInfos" />
-      <el-table-column label="入园日期" align="center" prop="admissionDate" width="180">
+      <el-table-column label="ID" align="center" prop="id" />
+      <el-table-column label="姓名" align="center" prop="rdname" />
+<!--      <el-table-column label="密码" align="center" prop="rdpasswd" />-->
+      <el-table-column label="身份证号码" align="center" prop="rdcertify" width="180"/>
+<!--      <el-table-column label="办证人员" align="center" prop="operator" />-->
+      <el-table-column label="开户馆" align="center" prop="rdlib" width="120">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.admissionDate, '{y}-{m}-{d}') }}</span>
+          <span>{{ scope.row.rdlib === 'SJZTSG' ? '石家庄市图书馆' : scope.row.rdlib }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="入园时段" align="center" prop="admissionPeriod" />
-      <el-table-column label="门票价格" align="center" prop="ticketPrice" />
-      <el-table-column label="所购门票名称" align="center" prop="ticketsPurchasedName" />
-      <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column label="读者类型" align="center" prop="rdtype" width="120">
+        <template slot-scope="scope">
+          <span>{{ scope.row.rdtype === '008' ? '新读者免押金' : scope.row.rdtype }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="手机号码" align="center" prop="rdloginid" />
+      <el-table-column label="email" align="center" prop="rdemail" width="180"/>
+      <el-table-column label="性别" align="center" prop="rdsex" />
+      <el-table-column label="住址" align="center" prop="rdaddress" width="200"/>
+      <el-table-column label="职业" align="center" prop="rdsort2" />
+      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="100">
         <template slot-scope="scope">
           <el-button
@@ -100,14 +103,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['service:xbporder:edit']"
+            v-hasPermi="['service:reader:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['service:xbporder:remove']"
+            v-hasPermi="['service:reader:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -121,40 +124,35 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改西柏坡订单对话框 -->
+    <!-- 添加或修改图书馆读者证对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="form.name" placeholder="请输入姓名" />
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <el-form-item label="姓名" prop="rdname">
+          <el-input v-model="form.rdname" placeholder="请输入姓名" />
         </el-form-item>
-        <el-form-item label="手机号" prop="phone">
-          <el-input v-model="form.phone" placeholder="请输入手机号" />
+<!--        <el-form-item label="密码" prop="rdpasswd">-->
+<!--          <el-input v-model="form.rdpasswd" placeholder="请输入密码" />-->
+<!--        </el-form-item>-->
+        <el-form-item label="身份证号码" prop="rdcertify">
+          <el-input v-model="form.rdcertify" placeholder="请输入身份证号码" />
         </el-form-item>
-        <el-form-item label="身份证号" prop="idCard">
-          <el-input v-model="form.idCard" placeholder="请输入身份证号" />
+<!--        <el-form-item label="办证人员" prop="operator">-->
+<!--          <el-input v-model="form.operator" placeholder="请输入办证人员" />-->
+<!--        </el-form-item>-->
+        <el-form-item label="开户馆" prop="rdlib">
+          <el-input v-model="form.rdlib" placeholder="请输入开户馆" />
         </el-form-item>
-        <el-form-item label="游客信息" prop="touristInfos">
-          <el-input v-model="form.touristInfos" type="textarea" placeholder="请输入内容" />
+        <el-form-item label="手机号码" prop="rdloginid">
+          <el-input v-model="form.rdloginid" placeholder="请输入手机号码" />
         </el-form-item>
-        <el-form-item label="入园日期" prop="admissionDate">
-          <el-date-picker clearable
-            v-model="form.admissionDate"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择入园日期">
-          </el-date-picker>
+        <el-form-item label="email" prop="rdemail">
+          <el-input v-model="form.rdemail" placeholder="请输入email" />
         </el-form-item>
-        <el-form-item label="入园时段" prop="admissionPeriod">
-          <el-input v-model="form.admissionPeriod" placeholder="请输入入园时段" />
+        <el-form-item label="住址" prop="rdaddress">
+          <el-input v-model="form.rdaddress" placeholder="请输入住址" />
         </el-form-item>
-        <el-form-item label="门票价格" prop="ticketPrice">
-          <el-input v-model="form.ticketPrice" placeholder="请输入门票价格" />
-        </el-form-item>
-        <el-form-item label="所购门票名称" prop="ticketsPurchasedName">
-          <el-input v-model="form.ticketsPurchasedName" placeholder="请输入所购门票名称" />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+        <el-form-item label="职业" prop="rdsort2">
+          <el-input v-model="form.rdsort2" placeholder="请输入职业" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -166,10 +164,10 @@
 </template>
 
 <script>
-import { listXbporder, getXbporder, delXbporder, addXbporder, updateXbporder } from "@/api/service/xbporder";
+import { listReader, getReader, delReader, addReader, updateReader } from "@/api/service/reader";
 
 export default {
-  name: "Xbporder",
+  name: "Reader",
   data() {
     return {
       // 遮罩层
@@ -184,8 +182,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 西柏坡订单表格数据
-      xbporderList: [],
+      // 图书馆读者证表格数据
+      readerList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -194,9 +192,8 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        name: null,
-        phone: null,
-        idCard: null,
+        rdname: null,
+        rdcertify: null,
       },
       // 表单参数
       form: {},
@@ -209,11 +206,11 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询西柏坡订单列表 */
+    /** 查询图书馆读者证列表 */
     getList() {
       this.loading = true;
-      listXbporder(this.queryParams).then(response => {
-        this.xbporderList = response.rows;
+      listReader(this.queryParams).then(response => {
+        this.readerList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -226,15 +223,18 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        orderId: null,
-        name: null,
-        phone: null,
-        idCard: null,
-        touristInfos: null,
-        admissionDate: null,
-        admissionPeriod: null,
-        ticketPrice: null,
-        ticketsPurchasedName: null,
+        id: null,
+        rdname: null,
+        rdpasswd: null,
+        rdcertify: null,
+        operator: null,
+        rdlib: null,
+        rdtype: null,
+        rdloginid: null,
+        rdemail: null,
+        rdsex: null,
+        rdaddress: null,
+        rdsort2: null,
         createBy: null,
         createTime: null,
         updateBy: null,
@@ -255,7 +255,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.orderId)
+      this.ids = selection.map(item => item.id)
       this.single = selection.length!==1
       this.multiple = !selection.length
     },
@@ -263,31 +263,30 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加西柏坡订单";
+      this.title = "添加图书馆读者证";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const orderId = row.orderId || this.ids
-      getXbporder(orderId).then(response => {
+      const id = row.id || this.ids
+      getReader(id).then(response => {
         this.form = response.data;
-        this.form.touristInfos = JSON.stringify(JSON.parse(this.form.touristInfos), null, 2)
         this.open = true;
-        this.title = "修改西柏坡订单";
+        this.title = "修改图书馆读者证";
       });
     },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.orderId != null) {
-            updateXbporder(this.form).then(response => {
+          if (this.form.id != null) {
+            updateReader(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addXbporder(this.form).then(response => {
+            addReader(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -298,9 +297,9 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const orderIds = row.orderId || this.ids;
-      this.$modal.confirm('是否确认删除西柏坡订单编号为"' + orderIds + '"的数据项？').then(function() {
-        return delXbporder(orderIds);
+      const ids = row.id || this.ids;
+      this.$modal.confirm('是否确认删除图书馆读者证编号为"' + ids + '"的数据项？').then(function() {
+        return delReader(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
@@ -308,9 +307,9 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('service/xbporder/export', {
+      this.download('service/reader/export', {
         ...this.queryParams
-      }, `xbporder_${new Date().getTime()}.xlsx`)
+      }, `reader_${new Date().getTime()}.xlsx`)
     }
   }
 };

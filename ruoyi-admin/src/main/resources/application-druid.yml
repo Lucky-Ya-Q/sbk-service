@@ -9,6 +9,8 @@ spring:
                 url: jdbc:mysql://localhost:3306/sbk-service?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
                 username: root
                 password: root
+#                username: sbk-service
+#                password: sbk-service
 #                password: xs_22852777
             # 从库数据源
             slave:

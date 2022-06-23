@@ -1,15 +1,17 @@
 package com.ruoyi.service.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.service.domain.SbkLibraryReader;
+import com.ruoyi.service.domain.SbkLibraryRenew;
 
 public interface LifeLibraryService {
     String token(); // 获取token
 
-    void addreader(); // 新增读者
+    JSONObject addreader(SbkLibraryReader sbkLibraryReader); // 新增读者
 
-    void rdloanlist(); // 查询读者当前借阅（群）
+    JSONObject rdloanlist(String rdid); // 查询读者当前借阅（群）
 
-    void renewbook(); // 续借（群）
+    JSONObject renewbook(SbkLibraryRenew sbkLibraryRenew); // 续借（群）
 
     JSONObject searchreaderlist(String rdcertify); // 多条件查询读者列表（群）
 
