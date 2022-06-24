@@ -21,6 +21,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Api(tags = "社保卡民生服务")
@@ -81,8 +82,27 @@ public class SbkLifeController extends BaseController {
         sbkXbporder.setAdmissionPeriod(appointmentVO.getAdmissionPeriod());
         sbkXbporder.setTicketPrice(appointmentVO.getTicketPrice());
         sbkXbporder.setTicketsPurchasedName(appointmentVO.getTicketsPurchasedName());
+        sbkXbporder.setCreateTime(new Date());
         sbkXbporderService.save(sbkXbporder);
 
+        return AjaxResult.success();
+    }
+
+    /**
+     * 核销西柏坡订单
+     *
+     * @return
+     */
+    @ApiOperation("核销西柏坡订单")
+    @Log(title = "核销西柏坡订单", businessType = BusinessType.OTHER)
+    @GetMapping("/cancelOrder")
+    public AjaxResult cancelOrder(String orderId) {
+        LambdaQueryWrapper<SbkXbporder> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SbkXbporder::getOrderId, orderId);
+        SbkXbporder sbkXbporder = sbkXbporderService.getOne(queryWrapper);
+        if (sbkXbporder != null) {
+            sbkXbporderService.updateById(sbkXbporder);
+        }
         return AjaxResult.success();
     }
 }

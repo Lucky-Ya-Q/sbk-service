@@ -79,11 +79,12 @@
 
     <el-table v-loading="loading" :data="xbporderList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="订单ID" align="center" prop="orderId" />
+      <el-table-column label="ID" align="center" prop="id" />
+      <el-table-column label="订单ID" align="center" prop="orderId" width="180"/>
       <el-table-column label="姓名" align="center" prop="name" />
       <el-table-column label="手机号" align="center" prop="phone" />
       <el-table-column label="身份证号" align="center" prop="idCard" />
-      <el-table-column label="游客信息" align="center" prop="touristInfos" />
+      <el-table-column label="游客信息" align="center" prop="touristInfos" width="180"/>
       <el-table-column label="入园日期" align="center" prop="admissionDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.admissionDate, '{y}-{m}-{d}') }}</span>
@@ -91,8 +92,18 @@
       </el-table-column>
       <el-table-column label="入园时段" align="center" prop="admissionPeriod" />
       <el-table-column label="门票价格" align="center" prop="ticketPrice" />
-      <el-table-column label="所购门票名称" align="center" prop="ticketsPurchasedName" />
+      <el-table-column label="所购门票名称" align="center" prop="ticketsPurchasedName" width="180"/>
       <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="核销时间" align="center" prop="createTime" width="180">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.updateTime, '{y}-{m}-{d}') }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="100">
         <template slot-scope="scope">
           <el-button
@@ -124,6 +135,9 @@
     <!-- 添加或修改西柏坡订单对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="订单ID" prop="name">
+          <el-input v-model="form.orderId" placeholder="请输入订单ID" />
+        </el-form-item>
         <el-form-item label="姓名" prop="name">
           <el-input v-model="form.name" placeholder="请输入姓名" />
         </el-form-item>
@@ -226,6 +240,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
+        id: null,
         orderId: null,
         name: null,
         phone: null,
@@ -255,7 +270,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.orderId)
+      this.ids = selection.map(item => item.id)
       this.single = selection.length!==1
       this.multiple = !selection.length
     },
@@ -268,8 +283,8 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const orderId = row.orderId || this.ids
-      getXbporder(orderId).then(response => {
+      const id = row.id || this.ids
+      getXbporder(id).then(response => {
         this.form = response.data;
         this.form.touristInfos = JSON.stringify(JSON.parse(this.form.touristInfos), null, 2)
         this.open = true;
@@ -280,7 +295,7 @@ export default {
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.orderId != null) {
+          if (this.form.id != null) {
             updateXbporder(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
@@ -298,9 +313,9 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const orderIds = row.orderId || this.ids;
-      this.$modal.confirm('是否确认删除西柏坡订单编号为"' + orderIds + '"的数据项？').then(function() {
-        return delXbporder(orderIds);
+      const ids = row.id || this.ids;
+      this.$modal.confirm('是否确认删除西柏坡订单编号为"' + ids + '"的数据项？').then(function() {
+        return delXbporder(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");

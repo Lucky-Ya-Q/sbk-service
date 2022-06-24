@@ -19,12 +19,11 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 public class SbkXbporder extends BaseEntity {
     private static final long serialVersionUID = 1L;
-
+    private Long id;
     /**
      * 订单ID
      */
-    @TableId
-    private Long orderId;
+    private String orderId;
 
     /**
      * 姓名
@@ -74,4 +73,10 @@ public class SbkXbporder extends BaseEntity {
      */
     @Excel(name = "所购门票名称")
     private String ticketsPurchasedName;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
 }
