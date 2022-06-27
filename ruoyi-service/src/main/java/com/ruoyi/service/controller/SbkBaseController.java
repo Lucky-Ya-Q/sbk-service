@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.service.domain.*;
 import com.ruoyi.service.dto.FwmmxgParam;
 import com.ruoyi.service.dto.Result;
@@ -513,7 +514,7 @@ public class SbkBaseController {
         return shenlingMap;
     }
 
-    private List<Map<String, Object>> getBuHuanKaData(ZkjdcxParam zkjdcxParam, String state) {
+    private List<Map<String, Object>> getBuHuanKaData(ZkjdcxParam zkjdcxParam, String state) throws IOException {
         List<Map<String, Object>> buhuankaList = new ArrayList<>();
 
         List<WxBukaInfo> wxBukaInfoList = wxBukaInfoService.selectListByLambdaQueryWrapper(new LambdaQueryWrapper<WxBukaInfo>().eq(WxBukaInfo::getIdcardno, zkjdcxParam.getSfzh()).eq(WxBukaInfo::getStepStatus, 9).in(WxBukaInfo::getExamineStatus, "0", "1", "2").orderByDesc(WxBukaInfo::getId));
@@ -591,6 +592,24 @@ public class SbkBaseController {
             resultList.add(mapc);
 
             if (mapc.get("flag").toString().equals("1")) {
+                // 社保卡基本信息查询
+                Result result = sbkService.getResult("0811014", zkjdcxParam.getSfzh() + "||");
+                if (!"200".equals(result.getStatusCode())) {
+                    throw new ServiceException(result.getMessage());
+                }
+                Map<String, String> data = (Map<String, String>) result.getData();
+                String jbxxcx = ParamUtils.decrypted(SbkParamUtils.PRIVATEKEY, data.get("ReturnResult"));
+                String[] jbxxcxArr = jbxxcx.split("\\|");
+
+                // 电子社保卡基本信息查询
+                Result dzsbkResult = sbkService.getResult("0811015", jbxxcxArr[10]);
+                if (!"200".equals(dzsbkResult.getStatusCode())) {
+                    throw new ServiceException(dzsbkResult.getMessage());
+                }
+                Map<String, String> dzsbkData = (Map<String, String>) dzsbkResult.getData();
+                String dzsbk = ParamUtils.decrypted(SbkParamUtils.PRIVATEKEY, dzsbkData.get("ReturnResult"));
+                String[] dzsbkArr = dzsbk.split("\\|");
+
                 String oldCardCode1 = "1、制卡信息采集已审核通过（工作日当天12点前审核通过下午寄出，12点后审核通过第二个工作日寄出）。";
                 String oldCardCode2 = "2、正在写入社保信息，请耐心等待";
                 String oldCardCode3 = "3、制卡成功，待邮寄";
@@ -610,6 +629,13 @@ public class SbkBaseController {
                         map1.put("time_flag", 0);
                         map2.put("time_flag", 0);
                         map3.put("time_flag", 0);
+
+                        if ("2".equals(dzsbkArr[5])){
+                            map1.put("flag", 0);
+                            map2.put("flag", 0);
+                            map3.put("flag", 0);
+                        }
+
                         mapList.add(map1);
                         mapList.add(map2);
                         mapList.add(map3);
@@ -629,6 +655,11 @@ public class SbkBaseController {
                         map1.put("time_flag", 0);
                         map2.put("time_flag", 0);
                         map3.put("time_flag", 0);
+
+                        if ("2".equals(dzsbkArr[5])){
+                            map1.put("flag", 0);
+                        }
+
                         mapList.add(map1);
                         mapList.add(map2);
                         mapList.add(map3);
@@ -654,6 +685,8 @@ public class SbkBaseController {
                         break;
                     }
                 }
+
+
                 Map<String, Object> map4 = new HashMap<>();
                 map4.put("info", "4、已邮寄");
                 LambdaQueryWrapper<WxSmspersonEms> queryWrapper = new LambdaQueryWrapper<WxSmspersonEms>()
