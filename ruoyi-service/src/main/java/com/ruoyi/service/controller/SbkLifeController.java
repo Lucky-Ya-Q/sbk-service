@@ -91,7 +91,7 @@ public class SbkLifeController extends BaseController {
         String[] jbxxcxArr = jbxxcx.split("\\|");
 
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("state", !jbxxcxArr[15].equals("2"));
+        resultMap.put("state", !jbxxcxArr[14].equals("2"));
         return AjaxResult.success(resultMap);
     }
 
