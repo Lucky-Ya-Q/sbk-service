@@ -1,6 +1,5 @@
 package com.ruoyi.service.service.impl;
 
-import cn.hutool.core.net.URLEncoder;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -14,10 +13,8 @@ import com.ruoyi.service.service.LifeLibraryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import org.springframework.web.client.RestTemplate;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -32,7 +29,8 @@ public class LifeLibraryServiceImpl implements LifeLibraryService {
     private ISbkLibraryReaderService sbkLibraryReaderService;
     @Autowired
     private ISbkLibraryRenewService sbkLibraryRenewService;
-    private final String baseUrl = "http://123.182.227.68:8889/openlib";
+    private final String baseUrl = "http://10.36.2.8:9007/8889/openlib";
+    private final String baseUrl1 = "http://10.36.2.8:9007/8088/opac";
 
     @Override
     public String token() {
@@ -112,7 +110,7 @@ public class LifeLibraryServiceImpl implements LifeLibraryService {
     @Override
     public JSONObject search(String q, String searchWay, String page, String rows) {
         String url = StrUtil.format(
-                "http://www.sjzlib.cn:8088/opac/advance/search?q={}&searchWay={}&return_fmt=json&view=json&page={}&rows={}",
+                baseUrl1 + "/advance/search?q={}&searchWay={}&return_fmt=json&view=json&page={}&rows={}",
                 q, searchWay, page, rows
         );
         return restTemplate.getForObject(url, JSONObject.class);
@@ -120,12 +118,12 @@ public class LifeLibraryServiceImpl implements LifeLibraryService {
 
     @Override
     public JSONObject holding(String bookrecno) {
-        return restTemplate.getForObject("http://www.sjzlib.cn:8088/opac/api/holding/" + bookrecno, JSONObject.class);
+        return restTemplate.getForObject(baseUrl1 + "/api/holding/" + bookrecno, JSONObject.class);
     }
 
     @Override
     public JSONObject book(String bookrecno) {
-        return restTemplate.getForObject("http://www.sjzlib.cn:8088/opac/api/book/" + bookrecno, JSONObject.class);
+        return restTemplate.getForObject(baseUrl1 + "/api/book/" + bookrecno, JSONObject.class);
     }
 
     private JSONObject result2Json(String result) {
