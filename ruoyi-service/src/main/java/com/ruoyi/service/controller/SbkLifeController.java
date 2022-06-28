@@ -136,6 +136,7 @@ public class SbkLifeController extends BaseController {
         queryWrapper.eq(SbkXbporder::getOrderId, orderId);
         SbkXbporder sbkXbporder = sbkXbporderService.getOne(queryWrapper);
         if (sbkXbporder != null) {
+            sbkXbporder.setUpdateTime(new Date());
             sbkXbporderService.updateById(sbkXbporder);
         }
         return AjaxResult.success();
