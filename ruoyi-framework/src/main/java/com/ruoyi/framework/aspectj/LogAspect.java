@@ -18,6 +18,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -27,7 +28,9 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,6 +42,53 @@ import java.util.Map;
 @Component
 public class LogAspect {
     private static final Logger log = LoggerFactory.getLogger(LogAspect.class);
+
+    @Before(value = "@annotation(controllerLog)")
+    public void doBefore(JoinPoint joinPoint, Log controllerLog) {
+        List<String> codeList = new ArrayList<>();
+        codeList.add("f54791a523474e12b7c183f17c3cbcc2");
+        codeList.add("e93db7c45148453abaeeab980e317c35");
+        codeList.add("b430191c8ef84d078f0d8e76979ccb86");
+
+        SysOperLog operLog = new SysOperLog();
+        operLog.setTitle(controllerLog.title());
+        operLog.setBusinessType(controllerLog.businessType().ordinal());
+        // 设置方法名称
+        String className = joinPoint.getTarget().getClass().getName();
+        String methodName = joinPoint.getSignature().getName();
+        operLog.setMethod(className + "." + methodName + "()");
+        // 设置请求方式
+        operLog.setRequestMethod(ServletUtils.getRequest().getMethod());
+        // 设置操作人类别
+        operLog.setOperatorType(controllerLog.operatorType().ordinal());
+        String queryString = ServletUtils.getRequest().getQueryString();
+        operLog.setOperUrl(ServletUtils.getRequest().getRequestURI() + (StrUtil.isEmpty(queryString) ? "" : "?" + queryString));
+
+        operLog.setOperIp(IpUtils.getIpAddr(ServletUtils.getRequest()));
+        // 是否需要保存request，参数和值
+        if (controllerLog.isSaveRequestData()) {
+            // 获取参数的信息，传入到数据库中。
+            setRequestValue(joinPoint, operLog);
+        }
+
+        HttpServletRequest request = ServletUtils.getRequest();
+        String code = request.getParameter("code");
+        if (StrUtil.isEmpty(code)) {
+            // 保存数据库
+            operLog.setStatus(BusinessStatus.FAIL.ordinal());
+            operLog.setErrorMsg("授权码不能为空");
+            AsyncManager.me().execute(AsyncFactory.recordOper(operLog));
+            throw new ServiceException("授权码不能为空");
+        } else {
+            if (!codeList.contains(code)) {
+                // 保存数据库
+                operLog.setStatus(BusinessStatus.FAIL.ordinal());
+                operLog.setErrorMsg("授权码错误");
+                AsyncManager.me().execute(AsyncFactory.recordOper(operLog));
+                throw new ServiceException("授权码错误");
+            }
+        }
+    }
 
     /**
      * 处理完请求后执行
@@ -96,14 +146,6 @@ public class LogAspect {
             operLog.setOperName(loginUser.getUsername());
         } else {
             String code = ServletUtils.getRequest().getParameter("code");
-            if (StrUtil.isEmpty(code)) {
-                // 保存数据库
-                operLog.setStatus(BusinessStatus.FAIL.ordinal());
-                operLog.setErrorMsg("授权码不能为空");
-                operLog.setJsonResult("");
-                AsyncManager.me().execute(AsyncFactory.recordOper(operLog));
-                throw new ServiceException("授权码不能为空");
-            }
             switch (code) {
                 case "f54791a523474e12b7c183f17c3cbcc2":
                     operLog.setOperName("xibaipo");
@@ -114,13 +156,6 @@ public class LogAspect {
                 case "b430191c8ef84d078f0d8e76979ccb86":
                     operLog.setOperName("ceshi");
                     break;
-                default:
-                    // 保存数据库
-                    operLog.setStatus(BusinessStatus.FAIL.ordinal());
-                    operLog.setErrorMsg("授权码错误");
-                    operLog.setJsonResult("");
-                    AsyncManager.me().execute(AsyncFactory.recordOper(operLog));
-                    throw new ServiceException("授权码错误");
             }
         }
         // 保存数据库

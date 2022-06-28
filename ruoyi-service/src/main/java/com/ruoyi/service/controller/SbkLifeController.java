@@ -9,20 +9,29 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.service.domain.SbkIndexMenu;
 import com.ruoyi.service.domain.SbkScenicSpots;
 import com.ruoyi.service.domain.SbkXbporder;
 import com.ruoyi.service.dto.AppointmentVO;
+import com.ruoyi.service.dto.Result;
+import com.ruoyi.service.dto.ZkjdcxParam;
 import com.ruoyi.service.service.ISbkIndexMenuService;
 import com.ruoyi.service.service.ISbkScenicSpotsService;
 import com.ruoyi.service.service.ISbkXbporderService;
+import com.ruoyi.service.service.SbkService;
+import com.ruoyi.service.util.SbkParamUtils;
+import com.tecsun.sm.utils.ParamUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Api(tags = "社保卡民生服务")
 @RestController
@@ -34,6 +43,8 @@ public class SbkLifeController extends BaseController {
     private ISbkIndexMenuService sbkIndexMenuService;
     @Autowired
     private ISbkScenicSpotsService sbkScenicSpotsService;
+    @Autowired
+    private SbkService sbkService;
 
     /**
      * 查询首页菜单列表
@@ -59,6 +70,29 @@ public class SbkLifeController extends BaseController {
                 .like(StrUtil.isNotEmpty(sbkScenicSpots.getTitle()), SbkScenicSpots::getTitle, sbkScenicSpots.getTitle());
         List<SbkScenicSpots> list = sbkScenicSpotsService.list(queryWrapper);
         return getDataTable(list);
+    }
+
+    /**
+     * 卡应用状态
+     *
+     * @return
+     */
+    @ApiOperation("卡应用状态")
+    @Log(title = "卡应用状态", businessType = BusinessType.OTHER)
+    @PostMapping("/cardState")
+    public AjaxResult cardState(ZkjdcxParam zkjdcxParam) throws IOException {
+        // 社保卡基本信息查询
+        Result result = sbkService.getResult("0811014", zkjdcxParam.getSfzh() + "||");
+        if (!"200".equals(result.getStatusCode())) {
+            throw new ServiceException(result.getMessage());
+        }
+        Map<String, String> data = (Map<String, String>) result.getData();
+        String jbxxcx = ParamUtils.decrypted(SbkParamUtils.PRIVATEKEY, data.get("ReturnResult"));
+        String[] jbxxcxArr = jbxxcx.split("\\|");
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("state", !jbxxcxArr[15].equals("2"));
+        return AjaxResult.success(resultMap);
     }
 
     /**
