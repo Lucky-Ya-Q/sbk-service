@@ -74,6 +74,7 @@ public class SbkLifeController extends BaseController {
         List<JSONObject> touristInfos = appointmentVO.getTouristInfos();
 
         SbkXbporder sbkXbporder = new SbkXbporder();
+        sbkXbporder.setOrderId(appointmentVO.getOrderId());
         sbkXbporder.setName(decryptData.getString("name"));
         sbkXbporder.setPhone(decryptData.getString("phone"));
         sbkXbporder.setIdCard(decryptData.getString("idCard"));

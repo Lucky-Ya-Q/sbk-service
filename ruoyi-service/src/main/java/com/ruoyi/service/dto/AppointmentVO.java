@@ -14,7 +14,8 @@ import java.util.List;
  */
 @Data
 public class AppointmentVO {
-
+    // 订单ID
+    private String orderId;
 
     /**
      * 证件类型
