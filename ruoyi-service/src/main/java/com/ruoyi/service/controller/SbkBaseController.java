@@ -34,10 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Api(tags = "社保卡基础功能")
@@ -601,15 +598,6 @@ public class SbkBaseController {
                 String jbxxcx = ParamUtils.decrypted(SbkParamUtils.PRIVATEKEY, data.get("ReturnResult"));
                 String[] jbxxcxArr = jbxxcx.split("\\|");
 
-                // 电子社保卡基本信息查询
-                Result dzsbkResult = sbkService.getResult("0811015", jbxxcxArr[10]);
-                if (!"200".equals(dzsbkResult.getStatusCode())) {
-                    throw new ServiceException(dzsbkResult.getMessage());
-                }
-                Map<String, String> dzsbkData = (Map<String, String>) dzsbkResult.getData();
-                String dzsbk = ParamUtils.decrypted(SbkParamUtils.PRIVATEKEY, dzsbkData.get("ReturnResult"));
-                String[] dzsbkArr = dzsbk.split("\\|");
-
                 String oldCardCode1 = "1、制卡信息采集已审核通过（工作日当天12点前审核通过下午寄出，12点后审核通过第二个工作日寄出）。";
                 String oldCardCode2 = "2、正在写入社保信息，请耐心等待";
                 String oldCardCode3 = "3、制卡成功，待邮寄";
@@ -630,7 +618,7 @@ public class SbkBaseController {
                         map2.put("time_flag", 0);
                         map3.put("time_flag", 0);
 
-                        if ("2".equals(dzsbkArr[5])){
+                        if ("2".equals(jbxxcxArr[14])){
                             map1.put("flag", 0);
                             map2.put("flag", 0);
                             map3.put("flag", 0);
@@ -656,7 +644,7 @@ public class SbkBaseController {
                         map2.put("time_flag", 0);
                         map3.put("time_flag", 0);
 
-                        if ("2".equals(dzsbkArr[5])){
+                        if ("2".equals(jbxxcxArr[14])){
                             map1.put("flag", 0);
                         }
 
