@@ -45,6 +45,15 @@ public class LogAspect {
 
     @Before(value = "@annotation(controllerLog)")
     public void doBefore(JoinPoint joinPoint, Log controllerLog) {
+        // 获取当前的用户
+        LoginUser loginUser = null;
+        try {
+            loginUser = SecurityUtils.getLoginUser();
+        } catch (Exception ex) {
+            log.info(ex.getMessage());
+        }
+        if (loginUser != null) return;
+
         List<String> codeList = new ArrayList<>();
         codeList.add("f54791a523474e12b7c183f17c3cbcc2");
         codeList.add("e93db7c45148453abaeeab980e317c35");
