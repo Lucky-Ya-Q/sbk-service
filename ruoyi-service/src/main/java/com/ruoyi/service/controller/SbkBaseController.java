@@ -1,7 +1,6 @@
 package com.ruoyi.service.controller;
 
 import cn.hutool.core.codec.Base64;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdcardUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
@@ -34,7 +33,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Api(tags = "社保卡基础功能")
@@ -406,7 +408,27 @@ public class SbkBaseController {
             wxArchives = wxArchivesService.selectOneByLambdaQueryWrapper(new LambdaQueryWrapper<WxArchives>().eq(WxArchives::getCardNum, zkjdcxParam.getSfzh()));
 
             shenlingMap.put("shijian", wxArchives.getAddTime());
-            shenlingMap.put("qudao", wxArchives.getSource().equals("1") ? "微信公众号" : "12333网站");
+            String source = wxArchives.getSource();
+            switch (source) {
+                case "1":
+                    shenlingMap.put("qudao", "微信公众号");
+                    break;
+                case "3":
+                    shenlingMap.put("qudao", "支付宝生活号");
+                    break;
+                case "5":
+                    shenlingMap.put("qudao", "电子社保卡");
+                    break;
+                case "6":
+                    shenlingMap.put("qudao", "赞皇社保卡");
+                    break;
+                case "7":
+                    shenlingMap.put("qudao", "鹿泉社保卡");
+                    break;
+                case "8":
+                    shenlingMap.put("qudao", "灵寿社保卡");
+                    break;
+            }
 
             switch (wxArchivesStatus.getIsMail()) {
                 case "1":
@@ -519,7 +541,27 @@ public class SbkBaseController {
             // buhuanka
             Map<String, Object> buhuankaMap = new HashMap<>();
             buhuankaMap.put("shijian", wxBukaInfo.getAddTime());
-            buhuankaMap.put("qudao", wxBukaInfo.getWebsource() == 1 ? "微信公众号" : "电子社保卡");
+            String source = String.valueOf(wxBukaInfo.getWebsource());
+            switch (source) {
+                case "1":
+                    buhuankaMap.put("qudao", "微信公众号");
+                    break;
+                case "3":
+                    buhuankaMap.put("qudao", "支付宝生活号");
+                    break;
+                case "5":
+                    buhuankaMap.put("qudao", "电子社保卡");
+                    break;
+                case "6":
+                    buhuankaMap.put("qudao", "赞皇社保卡");
+                    break;
+                case "7":
+                    buhuankaMap.put("qudao", "鹿泉社保卡");
+                    break;
+                case "8":
+                    buhuankaMap.put("qudao", "灵寿社保卡");
+                    break;
+            }
             // shenling.data 所有数据
             List<Map<String, Object>> resultList = new ArrayList<>();
             // shenling.data 德生数据
@@ -618,7 +660,7 @@ public class SbkBaseController {
                         map2.put("time_flag", 0);
                         map3.put("time_flag", 0);
 
-                        if ("2".equals(jbxxcxArr[14])){
+                        if ("2".equals(jbxxcxArr[14])) {
                             map1.put("flag", 0);
                             map2.put("flag", 0);
                             map3.put("flag", 0);
@@ -644,7 +686,7 @@ public class SbkBaseController {
                         map2.put("time_flag", 0);
                         map3.put("time_flag", 0);
 
-                        if ("2".equals(jbxxcxArr[14])){
+                        if ("2".equals(jbxxcxArr[14])) {
                             map1.put("flag", 0);
                         }
 
