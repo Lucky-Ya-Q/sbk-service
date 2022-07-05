@@ -428,7 +428,7 @@ public class SbkBaseController {
             if (wxArchivesStatus.getIsMail().equals("邮寄到家")) {
                 LambdaQueryWrapper<WxSmspersonEms> queryWrapper = new LambdaQueryWrapper<WxSmspersonEms>()
                         .like(WxSmspersonEms::getIdcard, wxArchives.getCardNum())
-                        .ge(WxSmspersonEms::getImporttime, wxArchives.getExamineTime());
+                        .ge(WxSmspersonEms::getImporttime, wxArchivesStatus.getExamineTime());
                 WxSmspersonEms wxSmspersonEms = wxSmspersonEmsService.selectOneByLambdaQueryWrapper(queryWrapper);
                 if (wxSmspersonEms == null) {
                     mapList.get(3).put("flag", 0);
