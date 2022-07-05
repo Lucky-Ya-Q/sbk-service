@@ -7,10 +7,13 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.service.domain.SbkEmsAddress;
+import com.ruoyi.service.domain.SbkEmsorder;
 import com.ruoyi.service.service.ISbkEmsAddressService;
+import com.ruoyi.service.service.ISbkEmsorderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -22,6 +25,8 @@ import java.util.List;
 public class LifeEmsController extends BaseController {
     @Autowired
     private ISbkEmsAddressService sbkEmsAddressService;
+    @Autowired
+    private ISbkEmsorderService sbkEmsorderService;
 
     /**
      * 查询邮政地址簿列表
@@ -71,5 +76,15 @@ public class LifeEmsController extends BaseController {
     @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(sbkEmsAddressService.removeBatchByIds(Arrays.asList(ids)));
+    }
+
+    /**
+     * 新增邮政订单
+     */
+    @ApiOperation("新增邮政订单")
+    @PostMapping("/addOrder")
+    public AjaxResult addOrder(@RequestBody SbkEmsorder sbkEmsorder)
+    {
+        return toAjax(sbkEmsorderService.save(sbkEmsorder));
     }
 }
