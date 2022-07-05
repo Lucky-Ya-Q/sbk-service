@@ -408,8 +408,7 @@ public class SbkBaseController {
             wxArchives = wxArchivesService.selectOneByLambdaQueryWrapper(new LambdaQueryWrapper<WxArchives>().eq(WxArchives::getCardNum, zkjdcxParam.getSfzh()));
 
             shenlingMap.put("shijian", wxArchives.getAddTime());
-            String source = wxArchives.getSource();
-            switch (source) {
+            switch (wxArchives.getSource()) {
                 case "1":
                     shenlingMap.put("qudao", "微信公众号");
                     break;
@@ -541,8 +540,7 @@ public class SbkBaseController {
             // buhuanka
             Map<String, Object> buhuankaMap = new HashMap<>();
             buhuankaMap.put("shijian", wxBukaInfo.getAddTime());
-            String source = String.valueOf(wxBukaInfo.getWebsource());
-            switch (source) {
+            switch (String.valueOf(wxBukaInfo.getWebsource())) {
                 case "1":
                     buhuankaMap.put("qudao", "微信公众号");
                     break;
