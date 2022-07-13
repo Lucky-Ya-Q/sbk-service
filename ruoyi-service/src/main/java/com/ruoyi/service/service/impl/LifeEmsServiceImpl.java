@@ -52,7 +52,7 @@ public class LifeEmsServiceImpl implements LifeEmsService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String logisticsOrderNo = "202207091200";
+        String logisticsOrderNo = "DZSBKMSFW" + System.currentTimeMillis();
 
         JSONObject body = getSignJSONObject(logisticsOrderNo);
         body.put("logistics_order_no", logisticsOrderNo);
@@ -199,7 +199,7 @@ public class LifeEmsServiceImpl implements LifeEmsService {
             }
             LambdaQueryWrapper<SbkEmsorder> queryWrapper1 = new LambdaQueryWrapper<>();
             queryWrapper1.eq(SbkEmsorder::getSfzh, myOrderParam.getSfzh());
-            queryWrapper1.ne(SbkEmsorder::getStatus, 1);
+            queryWrapper1.eq(SbkEmsorder::getStatus, 1);
             return sbkEmsorderService.list(queryWrapper1);
         } else if (type == 3L) {
             LambdaQueryWrapper<SbkEmsorder> queryWrapper = new LambdaQueryWrapper<>();

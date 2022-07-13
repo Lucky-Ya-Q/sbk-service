@@ -147,6 +147,7 @@ public class LifeEmsController extends BaseController {
     @PostMapping("/worker")
     public EmsResult worker(@RequestBody EmsParam emsParam) {
         try {
+            log.info("workerEmsParam ==> {}", emsParam);
             JSONObject requestParam = emsParam.getRequestParam();
             String txLogisticID = requestParam.getString("txLogisticID");
             LambdaUpdateWrapper<SbkEmsorder> updateWrapper = new LambdaUpdateWrapper<>();
@@ -166,6 +167,7 @@ public class LifeEmsController extends BaseController {
     @PostMapping("/result")
     public EmsResult result(@RequestBody EmsParam emsParam) {
         try {
+            log.info("resultEmsParam ==> {}", emsParam);
             JSONObject requestParam = emsParam.getRequestParam();
             String txLogisticID = requestParam.getString("txLogisticID");
             LambdaUpdateWrapper<SbkEmsorder> updateWrapper = new LambdaUpdateWrapper<>();
