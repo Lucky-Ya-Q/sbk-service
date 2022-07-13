@@ -43,8 +43,10 @@ public class LifeEmsServiceImpl implements LifeEmsService {
     @Autowired
     private ISbkEmsorderService sbkEmsorderService;
     private final String baseUrl = "http://211.156.197.233/jdpt-order-pus-web";
-    private final String url = "http://211.156.195.180/eis-itf-webext/uat_interface";
-    private final String secrect = "5abb3d66d4d36c62d7b7040f422d7529";
+//    private final String url = "http://211.156.195.180/eis-itf-webext/uat_interface";
+    private final String url = "http://211.156.195.180/eis-itf-webext/interface";
+//    private final String secrect = "5abb3d66d4d36c62d7b7040f422d7529";
+    private final String secrect = "5510c07e82fbc58649e1f347c24734bf";
     private final String senderNo = "1100031465304";
 
     @Override
