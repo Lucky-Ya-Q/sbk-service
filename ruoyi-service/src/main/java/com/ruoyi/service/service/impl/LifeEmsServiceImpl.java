@@ -131,26 +131,32 @@ public class LifeEmsServiceImpl implements LifeEmsService {
         LambdaQueryWrapper<SbkEmsorder> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SbkEmsorder::getSfzh, undoOrderParam.getSfzh());
         queryWrapper.eq(SbkEmsorder::getLogisticsOrderNo, undoOrderParam.getOrderNo());
-        long count = sbkEmsorderService.count(queryWrapper);
-        if (count != 1) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("status", "F");
-            jsonObject.put("message", "数据异常");
-            jsonObject.put("orderNo", undoOrderParam.getOrderNo());
-            return jsonObject;
+        SbkEmsorder sbkEmsorder = sbkEmsorderService.getOne(queryWrapper);
+        if (sbkEmsorder == null) {
+            JSONObject fail = new JSONObject();
+            fail.put("status", "F");
+            fail.put("message", "订单不存在");
+            fail.put("orderNo", undoOrderParam.getOrderNo());
+            return fail;
         }
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        JSONObject jsonObject = getSignJSONObject(undoOrderParam.getOrderNo());
-        jsonObject.put("cancelCode", undoOrderParam.getCancelCode());
-        jsonObject.put("orderNo", undoOrderParam.getOrderNo());
-        jsonObject.put("authorization", "PAILANTEST1592188060");
+        JSONObject body = getSignJSONObject(undoOrderParam.getOrderNo());
+        body.put("cancelCode", undoOrderParam.getCancelCode());
+        body.put("orderNo", undoOrderParam.getOrderNo());
+        body.put("authorization", "PAILANTEST1592188060");
 
-        HttpEntity<String> entity = new HttpEntity<>(jsonObject.toJSONString(), headers);
+        HttpEntity<String> entity = new HttpEntity<>(body.toJSONString(), headers);
         String result = restTemplate.postForObject(baseUrl + "/interface/receive/undoOrder", entity, String.class);
-        return JSON.parseObject(result);
+        JSONObject jsonObject = JSON.parseObject(result);
+        String status = jsonObject.getString("status");
+        if (status.equals("T")) {
+            sbkEmsorder.setStatus(99L);
+            sbkEmsorderService.updateById(sbkEmsorder);
+        }
+        return jsonObject;
     }
 
     @Override
@@ -158,9 +164,9 @@ public class LifeEmsServiceImpl implements LifeEmsService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        JSONObject jsonObject = getSignJSONObject("logistics_rder_no");
+        JSONObject body = getSignJSONObject("logistics_rder_no");
 
-        HttpEntity<String> entity = new HttpEntity<>(jsonObject.toJSONString(), headers);
+        HttpEntity<String> entity = new HttpEntity<>(body.toJSONString(), headers);
         String result = restTemplate.postForObject(baseUrl + "/oms/pickupRange/query", entity, String.class);
         return JSON.parseObject(result);
     }
@@ -170,11 +176,11 @@ public class LifeEmsServiceImpl implements LifeEmsService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        JSONObject jsonObject = getSignJSONObject(txLogisticID);
-        jsonObject.put("txLogisticID", txLogisticID);
-        jsonObject.put("authorization", "PAILANTEST1592188060");
+        JSONObject body = getSignJSONObject(txLogisticID);
+        body.put("txLogisticID", txLogisticID);
+        body.put("authorization", "PAILANTEST1592188060");
 
-        HttpEntity<String> entity = new HttpEntity<>(jsonObject.toJSONString(), headers);
+        HttpEntity<String> entity = new HttpEntity<>(body.toJSONString(), headers);
         String result = restTemplate.postForObject(baseUrl + "/interface/receive/collectResultQuery", entity, String.class);
         return JSON.parseObject(result);
     }
@@ -184,9 +190,9 @@ public class LifeEmsServiceImpl implements LifeEmsService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        JSONObject jsonObject = getSignJSONObject("202207091200");
+        JSONObject body = getSignJSONObject("202207091200");
 
-        HttpEntity<String> entity = new HttpEntity<>(jsonObject.toJSONString(), headers);
+        HttpEntity<String> entity = new HttpEntity<>(body.toJSONString(), headers);
         String result = restTemplate.postForObject(baseUrl + "/customer/updatePreTime", entity, String.class);
         return JSON.parseObject(result);
     }

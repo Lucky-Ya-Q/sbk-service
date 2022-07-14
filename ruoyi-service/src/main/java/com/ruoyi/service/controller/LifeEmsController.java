@@ -152,7 +152,6 @@ public class LifeEmsController extends BaseController {
     /**
      * 派揽状态
      */
-    @ApiOperation("派揽状态")
     @PostMapping("/worker")
     public EmsResult worker(@RequestBody EmsParam emsParam) {
         try {
@@ -172,7 +171,6 @@ public class LifeEmsController extends BaseController {
     /**
      * 揽收结果
      */
-    @ApiOperation("揽收结果")
     @PostMapping("/result")
     public EmsResult result(@RequestBody EmsParam emsParam) {
         try {
