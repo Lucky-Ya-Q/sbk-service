@@ -14,12 +14,14 @@ import com.google.common.collect.Maps;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.sign.Md5Utils;
 import com.ruoyi.service.domain.SbkEmsAddress;
 import com.ruoyi.service.domain.SbkEmsorder;
 import com.ruoyi.service.dto.LogisticsInterface;
 import com.ruoyi.service.dto.MyOrderParam;
 import com.ruoyi.service.dto.PlParam;
+import com.ruoyi.service.dto.UndoOrderParam;
 import com.ruoyi.service.service.ISbkEmsorderService;
 import com.ruoyi.service.service.LifeEmsService;
 import com.sun.org.apache.bcel.internal.generic.NEW;
@@ -42,10 +44,10 @@ public class LifeEmsServiceImpl implements LifeEmsService {
     private RestTemplate restTemplate;
     @Autowired
     private ISbkEmsorderService sbkEmsorderService;
-    private final String baseUrl = "http://211.156.197.233/jdpt-order-pus-web";
-//    private final String url = "http://211.156.195.180/eis-itf-webext/uat_interface";
-    private final String url = "http://211.156.195.180/eis-itf-webext/interface";
-//    private final String secrect = "5abb3d66d4d36c62d7b7040f422d7529";
+    private final String baseUrl = "http://dingzhou.sjzydrj.net/jdpt/jdpt-order-pus-web";
+    //    private final String url = "http://211.156.195.180/eis-itf-webext/uat_interface";
+    private final String url = "http://dingzhou.sjzydrj.net/eis/eis-itf-webext/interface";
+    //    private final String secrect = "5abb3d66d4d36c62d7b7040f422d7529";
     private final String secrect = "5510c07e82fbc58649e1f347c24734bf";
     private final String senderNo = "1100031465304";
 
@@ -125,11 +127,26 @@ public class LifeEmsServiceImpl implements LifeEmsService {
     }
 
     @Override
-    public JSONObject undoOrder() {
+    public JSONObject undoOrder(UndoOrderParam undoOrderParam) {
+        LambdaQueryWrapper<SbkEmsorder> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SbkEmsorder::getSfzh, undoOrderParam.getSfzh());
+        queryWrapper.eq(SbkEmsorder::getLogisticsOrderNo, undoOrderParam.getOrderNo());
+        long count = sbkEmsorderService.count(queryWrapper);
+        if (count != 1) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("status", "F");
+            jsonObject.put("message", "数据异常");
+            jsonObject.put("orderNo", undoOrderParam.getOrderNo());
+            return jsonObject;
+        }
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        JSONObject jsonObject = getSignJSONObject("logistics_order_no");
+        JSONObject jsonObject = getSignJSONObject(undoOrderParam.getOrderNo());
+        jsonObject.put("cancelCode", undoOrderParam.getCancelCode());
+        jsonObject.put("orderNo", undoOrderParam.getOrderNo());
+        jsonObject.put("authorization", "PAILANTEST1592188060");
 
         HttpEntity<String> entity = new HttpEntity<>(jsonObject.toJSONString(), headers);
         String result = restTemplate.postForObject(baseUrl + "/interface/receive/undoOrder", entity, String.class);
@@ -155,7 +172,6 @@ public class LifeEmsServiceImpl implements LifeEmsService {
 
         JSONObject jsonObject = getSignJSONObject(txLogisticID);
         jsonObject.put("txLogisticID", txLogisticID);
-
         jsonObject.put("authorization", "PAILANTEST1592188060");
 
         HttpEntity<String> entity = new HttpEntity<>(jsonObject.toJSONString(), headers);
@@ -218,7 +234,7 @@ public class LifeEmsServiceImpl implements LifeEmsService {
             queryWrapper1.eq(SbkEmsorder::getStatus, 1);
             return sbkEmsorderService.list(queryWrapper1);
         } else {
-            return null;
+            throw new ServiceException("类型错误");
         }
     }
 

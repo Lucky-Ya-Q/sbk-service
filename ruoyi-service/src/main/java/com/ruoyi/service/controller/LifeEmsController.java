@@ -105,6 +105,15 @@ public class LifeEmsController extends BaseController {
     }
 
     /**
+     * 取消上门取件
+     */
+    @ApiOperation("取消上门取件")
+    @PostMapping("/undoOrder")
+    public JSONObject undoOrder(@RequestBody UndoOrderParam undoOrderParam) {
+        return lifeEmsService.undoOrder(undoOrderParam);
+    }
+
+    /**
      * 我的订单
      */
     @ApiOperation("我的订单")
