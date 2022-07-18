@@ -61,6 +61,18 @@ public class SbkBaseController {
 //    private SbkBaseService sbkBaseService;
     @Autowired
     private WxSmspersonEmsService wxSmspersonEmsService;
+    @Autowired
+    private IUnitinfoShiService unitinfoShiService;
+    @Autowired
+    private IWxBukaBankService wxBukaBankService;
+    @Autowired
+    private IWxRelationService wxRelationService;
+    @Autowired
+    private IWxResidenceTypeService wxResidenceTypeService;
+    @Autowired
+    private IWxOccupationService wxOccupationService;
+    @Autowired
+    private IWxMingzuService wxMingzuService;
 
 
     /**
@@ -751,5 +763,60 @@ public class SbkBaseController {
             buhuankaList.add(buhuankaMap);
         }
         return buhuankaList;
+    }
+
+    /**
+     * 查询单位信息列表
+     */
+    @ApiOperation("查询单位信息列表")
+    @GetMapping("/unitinfoShi")
+    public AjaxResult unitinfoShi(UnitinfoShi unitinfoShi) {
+        List<UnitinfoShi> list = unitinfoShiService.selectUnitinfoShiList(unitinfoShi);
+        return AjaxResult.success(list);
+    }
+
+    /**
+     * 查询银行信息列表
+     */
+    @ApiOperation("查询银行信息列表")
+    @GetMapping("/wxBukaBank")
+    public AjaxResult wxBukaBank() {
+        return AjaxResult.success(wxBukaBankService.listAll());
+    }
+
+    /**
+     * 查询代办人关系列表
+     */
+    @ApiOperation("查询代办人关系列表")
+    @GetMapping("/wxRelation")
+    public AjaxResult wxRelation() {
+        return AjaxResult.success(wxRelationService.listAll());
+    }
+
+    /**
+     * 查询户口性质列表
+     */
+    @ApiOperation("查询户口性质列表")
+    @GetMapping("/wxResidenceType")
+    public AjaxResult wxResidenceType() {
+        return AjaxResult.success(wxResidenceTypeService.listAll());
+    }
+
+    /**
+     * 查询职业信息列表
+     */
+    @ApiOperation("查询职业信息列表")
+    @GetMapping("/wxOccupation")
+    public AjaxResult wxOccupation() {
+        return AjaxResult.success(wxOccupationService.listAll());
+    }
+
+    /**
+     * 查询民族信息列表
+     */
+    @ApiOperation("查询民族信息列表")
+    @GetMapping("/wxMingzu")
+    public AjaxResult wxMingzu() {
+        return AjaxResult.success(wxMingzuService.listAll());
     }
 }
