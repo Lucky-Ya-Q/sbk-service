@@ -80,8 +80,7 @@ public class LogAspect {
             setRequestValue(joinPoint, operLog);
         }
 
-        HttpServletRequest request = ServletUtils.getRequest();
-        String code = request.getParameter("code");
+        String code = ServletUtils.getRequest().getParameter("code");
         if (StrUtil.isEmpty(code)) {
             // 保存数据库
             operLog.setStatus(BusinessStatus.FAIL.ordinal());
