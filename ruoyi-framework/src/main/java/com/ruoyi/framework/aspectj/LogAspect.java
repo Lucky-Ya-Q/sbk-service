@@ -55,6 +55,7 @@ public class LogAspect {
         if (loginUser != null) return;
 
         List<String> codeList = new ArrayList<>();
+        codeList.add("d564edee1cb541b2b1925dcaeb54ed0c");
         codeList.add("f54791a523474e12b7c183f17c3cbcc2");
         codeList.add("e93db7c45148453abaeeab980e317c35");
         codeList.add("b430191c8ef84d078f0d8e76979ccb86");
@@ -155,6 +156,9 @@ public class LogAspect {
         } else {
             String code = ServletUtils.getRequest().getParameter("code");
             switch (code) {
+                case "d564edee1cb541b2b1925dcaeb54ed0c":
+                    operLog.setOperName("luquan");
+                    break;
                 case "f54791a523474e12b7c183f17c3cbcc2":
                     operLog.setOperName("xibaipo");
                     break;

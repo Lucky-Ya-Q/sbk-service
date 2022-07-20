@@ -61,11 +61,13 @@ public class LifeEmsServiceImpl implements LifeEmsService {
         JSONObject body = getSignJSONObject(logisticsOrderNo);
         body.put("logistics_order_no", logisticsOrderNo);
         // 授权码由邮政提供
-        body.put("authorization", "PAILANTEST1592188060,PAILANTEST");
+//        body.put("authorization", "PAILANTEST1592188060,PAILANTEST");
+//        body.put("authorization", "DZSBKMSFW1658199899680,DZSBKMSFW");
+        body.put("authorization", "DZSBKMSFW1658199899,DZSBKMSFW");
         // 1：文件  3、物品  2：信函  4、包裹
         body.put("contents_attribute", plParam.getContentsAttribute());
         // 1：特快专递  2：快递包裹  3：代收/到付
-        body.put("biz_product_no", 1);
+        body.put("biz_product_no", "1");
         // 订单重量  单位：千克
         body.put("weight", plParam.getWeight());
         // 1:客户自提2:上门投递3:智能包裹柜4:网点代投
@@ -83,7 +85,7 @@ public class LifeEmsServiceImpl implements LifeEmsService {
         // 留言
         body.put("message", plParam.getMessage());
         // （1、散户-及时上门2、协议客户-固定频次上门按照机构配置时间分上下午推送，未维护默认上午9:00和下午16:00两个频次）
-        body.put("pushMethod", 1);
+        body.put("pushMethod", "1");
         body.put("sender", plParam.getSender());
         body.put("receiver", plParam.getReceiver());
         JSONObject delivery = new JSONObject();
