@@ -1,22 +1,12 @@
 package com.ruoyi.service.service.impl;
 
-import java.util.Date;
-import java.util.List;
-
 import cn.hutool.core.codec.Base64;
-import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.DigestUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.google.common.collect.Maps;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.common.utils.sign.Md5Utils;
-import com.ruoyi.service.domain.SbkEmsAddress;
 import com.ruoyi.service.domain.SbkEmsorder;
 import com.ruoyi.service.dto.LogisticsInterface;
 import com.ruoyi.service.dto.MyOrderParam;
@@ -24,18 +14,18 @@ import com.ruoyi.service.dto.PlParam;
 import com.ruoyi.service.dto.UndoOrderParam;
 import com.ruoyi.service.service.ISbkEmsorderService;
 import com.ruoyi.service.service.LifeEmsService;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -44,10 +34,12 @@ public class LifeEmsServiceImpl implements LifeEmsService {
     private RestTemplate restTemplate;
     @Autowired
     private ISbkEmsorderService sbkEmsorderService;
-    private final String baseUrl = "http://dingzhou.sjzydrj.net/jdpt/jdpt-order-pus-web";
+    //    private final String baseUrl = "http://dingzhou.sjzydrj.net/jdpt/jdpt-order-pus-web";
     //    private final String url = "http://211.156.195.180/eis-itf-webext/uat_interface";
-    private final String url = "http://dingzhou.sjzydrj.net/eis/eis-itf-webext/interface";
+    //    private final String url = "http://dingzhou.sjzydrj.net/eis/eis-itf-webext/interface";
     //    private final String secrect = "5abb3d66d4d36c62d7b7040f422d7529";
+    private final String baseUrl = "http://10.36.2.8:9007/jdpt/jdpt-order-pus-web";
+    private final String url = "http://10.36.2.8:9007/eis/eis-itf-webext/interface";
     private final String secrect = "5510c07e82fbc58649e1f347c24734bf";
     private final String senderNo = "1100031465304";
 
@@ -89,10 +81,15 @@ public class LifeEmsServiceImpl implements LifeEmsService {
         body.put("sender", plParam.getSender());
         body.put("receiver", plParam.getReceiver());
         JSONObject delivery = new JSONObject();
-        delivery.put("prov", "安徽省");
-        delivery.put("city", "合肥市");
-        delivery.put("county", "巢湖市");
-        delivery.put("address", "安徽省合肥市巢湖市盐务管理局");
+//        delivery.put("prov", "安徽省");
+//        delivery.put("city", "合肥市");
+//        delivery.put("county", "巢湖市");
+//        delivery.put("address", "安徽省合肥市巢湖市盐务管理局");
+        JSONObject sender = plParam.getSender();
+        delivery.put("prov", sender.getString("prov"));
+        delivery.put("city", sender.getString("city"));
+        delivery.put("county", sender.getString("county"));
+        delivery.put("address", sender.getString("address"));
         body.put("delivery", delivery);
         log.info(body.toJSONString());
         HttpEntity<String> entity = new HttpEntity<>(body.toJSONString(), headers);
